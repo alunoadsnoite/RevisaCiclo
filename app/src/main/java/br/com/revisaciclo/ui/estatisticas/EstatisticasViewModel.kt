@@ -7,7 +7,11 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import br.com.revisaciclo.RevisaCicloApp
 import br.com.revisaciclo.domain.agregacao.CalculadoraEstatisticas
+import br.com.revisaciclo.domain.agregacao.FiltroProjeto
 import br.com.revisaciclo.domain.model.EstatisticaRevisao
+import br.com.revisaciclo.domain.projetos.observarProjetoAtivo
+import br.com.revisaciclo.domain.repository.PreferenciasRepository
+import br.com.revisaciclo.domain.repository.ProjetoRepository
 import br.com.revisaciclo.domain.repository.RevisaoRepository
 import java.time.Clock
 import java.time.LocalDate
@@ -20,10 +24,13 @@ import kotlinx.coroutines.flow.stateIn
 data class EstatisticasUiState(
     val carregando: Boolean = true,
     val estatisticas: EstatisticaRevisao? = null,
+    val estatisticasGlobais: EstatisticaRevisao? = null,
 )
 
 class EstatisticasViewModel(
     private val repository: RevisaoRepository,
+    private val preferenciasRepository: PreferenciasRepository,
+    private val projetoRepository: ProjetoRepository,
     private val clock: Clock,
 ) : ViewModel() {
 
@@ -31,11 +38,23 @@ class EstatisticasViewModel(
 
     val uiState: StateFlow<EstatisticasUiState> = combine(
         hoje,
+        observarProjetoAtivo(projetoRepository, preferenciasRepository),
+        repository.observarDisciplinas(),
+        repository.observarAssuntos(),
         repository.observarRevisoes(),
-    ) { data, revisoes ->
+    ) { data, projeto, disciplinas, assuntos, revisoes ->
+        val disciplinaIds = FiltroProjeto.disciplinas(disciplinas, projeto?.id)
+            .map { it.id }
+            .toSet()
+        val assuntoIds = FiltroProjeto.assuntos(assuntos, disciplinaIds)
+            .map { it.id }
+            .toSet()
+        val revisoesDoProjeto = FiltroProjeto.revisoes(revisoes, assuntoIds)
+
         EstatisticasUiState(
             carregando = false,
-            estatisticas = CalculadoraEstatisticas.calcular(revisoes, data),
+            estatisticas = CalculadoraEstatisticas.calcular(revisoesDoProjeto, data),
+            estatisticasGlobais = CalculadoraEstatisticas.calcular(revisoes, data),
         )
     }
         .stateIn(
@@ -55,7 +74,12 @@ class EstatisticasViewModel(
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val app = this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as RevisaCicloApp
-                EstatisticasViewModel(app.container.revisaoRepository, app.container.clock)
+                EstatisticasViewModel(
+                    repository = app.container.revisaoRepository,
+                    preferenciasRepository = app.container.preferenciasRepository,
+                    projetoRepository = app.container.projetoRepository,
+                    clock = app.container.clock,
+                )
             }
         }
     }

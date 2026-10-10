@@ -22,6 +22,7 @@ data class Preferencias(
     val metaDiaria: Int = META_DIARIA_PADRAO,
     val tema: TemaApp = TemaApp.AUTOMATICO,
     val intervalosDias: List<Int> = MotorRevisaoEspacada.INTERVALOS_PADRAO,
+    val projetoAtivoId: Long? = null,
 ) {
     companion object {
         const val META_DIARIA_PADRAO = 20

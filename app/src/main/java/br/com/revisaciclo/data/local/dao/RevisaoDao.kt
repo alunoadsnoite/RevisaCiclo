@@ -59,7 +59,4 @@ interface RevisaoDao {
 
     @Query("SELECT COUNT(*) FROM revisoes")
     suspend fun contar(): Int
-
-    @Query("SELECT COUNT(*) FROM revisoes WHERE status != 'CONCLUIDA' AND agendadaPara <= :hoje")
-    suspend fun contarDevidas(hoje: Long): Int
 }

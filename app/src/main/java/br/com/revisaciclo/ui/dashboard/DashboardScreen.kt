@@ -47,11 +47,13 @@ import br.com.revisaciclo.domain.model.ProgressoMeta
 import br.com.revisaciclo.domain.model.Revisao
 import br.com.revisaciclo.domain.model.StatusRevisao
 import br.com.revisaciclo.ui.common.formatarData
+import br.com.revisaciclo.ui.projetos.SeletorProjetoAtivo
 import kotlin.math.roundToInt
 
 @Composable
 fun DashboardScreen(
     onAbrirConfiguracoes: () -> Unit,
+    onGerenciarProjetos: () -> Unit = {},
     viewModel: DashboardViewModel = viewModel(factory = DashboardViewModel.Factory),
 ) {
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
@@ -59,7 +61,11 @@ fun DashboardScreen(
         viewModel.atualizarData()
         onPauseOrDispose { }
     }
-    DashboardContent(estado = estado, onAbrirConfiguracoes = onAbrirConfiguracoes)
+    DashboardContent(
+        estado = estado,
+        onAbrirConfiguracoes = onAbrirConfiguracoes,
+        onGerenciarProjetos = onGerenciarProjetos,
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,12 +73,14 @@ fun DashboardScreen(
 private fun DashboardContent(
     estado: DashboardUiState,
     onAbrirConfiguracoes: () -> Unit,
+    onGerenciarProjetos: () -> Unit,
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Dashboard") },
                 actions = {
+                    SeletorProjetoAtivo(onGerenciarProjetos = onGerenciarProjetos)
                     IconButton(onClick = onAbrirConfiguracoes) {
                         Icon(
                             imageVector = Icons.Default.Settings,

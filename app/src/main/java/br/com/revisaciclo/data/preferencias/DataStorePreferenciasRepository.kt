@@ -71,6 +71,7 @@ internal fun Preferences.toPreferencias(): Preferencias {
             .coerceIn(Preferencias.META_DIARIA_MINIMA, Preferencias.META_DIARIA_MAXIMA),
         tema = tema,
         intervalosDias = intervalos,
+        projetoAtivoId = this[CHAVE_PROJETO_ATIVO],
     )
 }
 
@@ -81,6 +82,12 @@ internal fun MutablePreferences.escrever(preferencias: Preferencias) {
     this[CHAVE_META] = preferencias.metaDiaria
     this[CHAVE_TEMA] = preferencias.tema.name
     this[CHAVE_INTERVALOS] = preferencias.intervalosDias.joinToString(",")
+    val projetoAtivoId = preferencias.projetoAtivoId
+    if (projetoAtivoId == null) {
+        remove(CHAVE_PROJETO_ATIVO)
+    } else {
+        this[CHAVE_PROJETO_ATIVO] = projetoAtivoId
+    }
 }
 
 internal fun decodificarIntervalos(texto: String): List<Int> =
@@ -97,4 +104,5 @@ private val CHAVE_MINUTO = intPreferencesKey("horario_minuto")
 private val CHAVE_META = intPreferencesKey("meta_diaria")
 private val CHAVE_TEMA = stringPreferencesKey("tema")
 private val CHAVE_INTERVALOS = stringPreferencesKey("intervalos_dias")
+private val CHAVE_PROJETO_ATIVO = longPreferencesKey("projeto_ativo_id")
 private val CHAVE_ULTIMA_NOTIFICACAO = longPreferencesKey("ultima_notificacao_dia")

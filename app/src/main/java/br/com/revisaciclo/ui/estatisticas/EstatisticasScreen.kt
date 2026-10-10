@@ -38,12 +38,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import br.com.revisaciclo.ui.projetos.SeletorProjetoAtivo
 import br.com.revisaciclo.domain.model.ContagemDiaria
 import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
 fun EstatisticasScreen(
+    onGerenciarProjetos: () -> Unit = {},
     viewModel: EstatisticasViewModel = viewModel(factory = EstatisticasViewModel.Factory),
 ) {
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
@@ -54,10 +56,16 @@ fun EstatisticasScreen(
     }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(text = "Estatísticas") }) },
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Estatísticas") },
+                actions = { SeletorProjetoAtivo(onGerenciarProjetos = onGerenciarProjetos) },
+            )
+        },
     ) { padding ->
         val estatisticas = estado.estatisticas
-        if (estado.carregando || estatisticas == null) {
+        val globais = estado.estatisticasGlobais
+        if (estado.carregando || estatisticas == null || globais == null) {
             Box(
                 modifier = Modifier
                     .padding(padding)
@@ -75,20 +83,43 @@ fun EstatisticasScreen(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                CartaoResumo(estatisticas = estatisticas)
-                CartaoEvolucao(
-                    titulo = "Últimos 7 dias",
-                    contagens = estatisticas.evolucao7Dias,
+                Secao(
+                    titulo = "Projeto ativo",
+                    estatisticas = estatisticas,
                     comRotulos = true,
                 )
-                CartaoEvolucao(
-                    titulo = "Últimos 30 dias",
-                    contagens = estatisticas.evolucao30Dias,
+                Secao(
+                    titulo = "Totais globais (todos os projetos)",
+                    estatisticas = globais,
                     comRotulos = false,
                 )
             }
         }
     }
+}
+
+@Composable
+private fun Secao(
+    titulo: String,
+    estatisticas: br.com.revisaciclo.domain.model.EstatisticaRevisao,
+    comRotulos: Boolean,
+) {
+    Text(
+        text = titulo,
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.SemiBold,
+    )
+    CartaoResumo(estatisticas = estatisticas)
+    CartaoEvolucao(
+        titulo = "Últimos 7 dias",
+        contagens = estatisticas.evolucao7Dias,
+        comRotulos = comRotulos,
+    )
+    CartaoEvolucao(
+        titulo = "Últimos 30 dias",
+        contagens = estatisticas.evolucao30Dias,
+        comRotulos = false,
+    )
 }
 
 @Composable

@@ -28,6 +28,7 @@ import br.com.revisaciclo.ui.configuracoes.ConfiguracoesScreen
 import br.com.revisaciclo.ui.dashboard.DashboardScreen
 import br.com.revisaciclo.ui.disciplinas.DisciplinasScreen
 import br.com.revisaciclo.ui.estatisticas.EstatisticasScreen
+import br.com.revisaciclo.ui.projetos.ProjetosScreen
 import br.com.revisaciclo.ui.revisoes.RevisoesScreen
 import br.com.revisaciclo.ui.roda.RodaRevisaoScreen
 import br.com.revisaciclo.ui.sessao.SessaoRevisaoScreen
@@ -40,6 +41,7 @@ object Destinos {
     const val ESTATISTICAS = "estatisticas"
     const val SESSAO = "sessao"
     const val CONFIGURACOES = "configuracoes"
+    const val PROJETOS = "projetos"
     const val ASSUNTOS = "assuntos/{disciplinaId}"
     const val ARG_DISCIPLINA_ID = "disciplinaId"
 
@@ -74,6 +76,7 @@ fun RevisaCicloNavHost(
         Aba(Destinos.ESTATISTICAS, "Estatísticas") to Icons.Default.Info,
     )
     val mostrarBarra = abas.any { it.first.destino == rotaAtual }
+    val irParaProjetos = { navController.navigate(Destinos.PROJETOS) { launchSingleTop = true } }
 
     Scaffold(
         bottomBar = {
@@ -107,11 +110,13 @@ fun RevisaCicloNavHost(
             composable(Destinos.DASHBOARD) {
                 DashboardScreen(
                     onAbrirConfiguracoes = { navController.navigate(Destinos.CONFIGURACOES) },
+                    onGerenciarProjetos = irParaProjetos,
                 )
             }
             composable(Destinos.RODA) {
                 RodaRevisaoScreen(
                     onIniciarSessao = { navController.navigate(Destinos.SESSAO) },
+                    onGerenciarProjetos = irParaProjetos,
                 )
             }
             composable(Destinos.DISCIPLINAS) {
@@ -119,15 +124,20 @@ fun RevisaCicloNavHost(
                     onAbrirAssuntos = { disciplinaId ->
                         navController.navigate(Destinos.assuntos(disciplinaId))
                     },
+                    onGerenciarProjetos = irParaProjetos,
                 )
             }
             composable(Destinos.REVISOES) {
                 RevisoesScreen(
                     onIniciarSessao = { navController.navigate(Destinos.SESSAO) },
+                    onGerenciarProjetos = irParaProjetos,
                 )
             }
             composable(Destinos.ESTATISTICAS) {
-                EstatisticasScreen()
+                EstatisticasScreen(onGerenciarProjetos = irParaProjetos)
+            }
+            composable(Destinos.PROJETOS) {
+                ProjetosScreen(onVoltar = { navController.popBackStack() })
             }
             composable(Destinos.SESSAO) {
                 SessaoRevisaoScreen(

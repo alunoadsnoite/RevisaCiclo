@@ -94,12 +94,10 @@ class OfflineRevisaoRepository(
             }
         }
 
-    override suspend fun contarRevisoesDevidas(hoje: LocalDate): Int =
-        revisaoDao.contarDevidas(hoje.toEpochDay())
-
-    override suspend fun criarDisciplina(nome: String, cor: Long): Long =
+    override suspend fun criarDisciplina(projetoId: Long, nome: String, cor: Long): Long =
         disciplinaDao.inserir(
             DisciplinaEntity(
+                projetoId = projetoId,
                 nome = nome,
                 cor = cor,
                 criadaEm = Instant.now(clock).toEpochMilli(),

@@ -94,6 +94,18 @@ class DataStorePreferenciasRepositoryTest {
     }
 
     @Test
+    fun `persiste o projeto ativo e o limpa quando nulo`() = runBlocking {
+        val repositorio = criarRepositorio()
+
+        assertNull(repositorio.preferencias.first().projetoAtivoId)
+        repositorio.atualizar { it.copy(projetoAtivoId = 7L) }
+        assertEquals(7L, repositorio.preferencias.first().projetoAtivoId)
+
+        repositorio.atualizar { it.copy(projetoAtivoId = null) }
+        assertNull(repositorio.preferencias.first().projetoAtivoId)
+    }
+
+    @Test
     fun `mapping de preferencias vazias devolve os padroes`() {
         assertEquals(Preferencias(), emptyPreferences().toPreferencias())
     }

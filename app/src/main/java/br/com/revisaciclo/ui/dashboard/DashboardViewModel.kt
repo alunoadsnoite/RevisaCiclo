@@ -7,13 +7,16 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import br.com.revisaciclo.RevisaCicloApp
 import br.com.revisaciclo.domain.agregacao.CalculadoraMeta
+import br.com.revisaciclo.domain.agregacao.FiltroProjeto
 import br.com.revisaciclo.domain.model.Assunto
 import br.com.revisaciclo.domain.model.Disciplina
 import br.com.revisaciclo.domain.model.ProgressoDisciplina
 import br.com.revisaciclo.domain.model.ProgressoMeta
 import br.com.revisaciclo.domain.model.Revisao
 import br.com.revisaciclo.domain.model.StatusRevisao
+import br.com.revisaciclo.domain.projetos.observarProjetoAtivo
 import br.com.revisaciclo.domain.repository.PreferenciasRepository
+import br.com.revisaciclo.domain.repository.ProjetoRepository
 import br.com.revisaciclo.domain.repository.RevisaoRepository
 import java.time.Clock
 import java.time.LocalDate
@@ -50,6 +53,7 @@ private data class DadosDashboard(
 class DashboardViewModel(
     private val repository: RevisaoRepository,
     private val preferenciasRepository: PreferenciasRepository,
+    private val projetoRepository: ProjetoRepository,
     private val clock: Clock,
 ) : ViewModel() {
 
@@ -67,20 +71,28 @@ class DashboardViewModel(
     val uiState: StateFlow<DashboardUiState> = combine(
         hoje,
         preferenciasRepository.preferencias,
+        observarProjetoAtivo(projetoRepository, preferenciasRepository),
         dados,
-    ) { data, preferencias, dados ->
+    ) { data, preferencias, projeto, dados ->
+        val disciplinas = FiltroProjeto.disciplinas(dados.disciplinas, projeto?.id)
+        val disciplinaIds = disciplinas.map { it.id }.toSet()
+        val assuntos = FiltroProjeto.assuntos(dados.assuntos, disciplinaIds)
+        val assuntoIds = assuntos.map { it.id }.toSet()
+        val revisoes = FiltroProjeto.revisoes(dados.revisoes, assuntoIds)
+        val progressos = FiltroProjeto.progresso(dados.progressos, disciplinaIds)
+
         DashboardUiState(
             carregando = false,
-            totalDisciplinas = dados.disciplinas.size,
-            totalAssuntos = dados.assuntos.size,
-            totalRevisoes = dados.revisoes.size,
-            revisoesConcluidas = dados.revisoes.count { it.status == StatusRevisao.CONCLUIDA },
-            proximaRevisao = dados.revisoes
+            totalDisciplinas = disciplinas.size,
+            totalAssuntos = assuntos.size,
+            totalRevisoes = revisoes.size,
+            revisoesConcluidas = revisoes.count { it.status == StatusRevisao.CONCLUIDA },
+            proximaRevisao = revisoes
                 .filter { it.status != StatusRevisao.CONCLUIDA }
                 .minByOrNull { it.agendadaPara },
-            progressos = dados.progressos,
+            progressos = progressos,
             progressoMeta = CalculadoraMeta.calcular(
-                revisoes = dados.revisoes,
+                revisoes = revisoes,
                 hoje = data,
                 metaDiaria = preferencias.metaDiaria,
             ),
@@ -105,6 +117,7 @@ class DashboardViewModel(
                 DashboardViewModel(
                     repository = app.container.revisaoRepository,
                     preferenciasRepository = app.container.preferenciasRepository,
+                    projetoRepository = app.container.projetoRepository,
                     clock = app.container.clock,
                 )
             }

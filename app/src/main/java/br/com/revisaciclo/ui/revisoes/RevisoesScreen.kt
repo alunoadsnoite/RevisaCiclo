@@ -41,18 +41,25 @@ import br.com.revisaciclo.domain.model.AvaliacaoRevisao
 import br.com.revisaciclo.domain.model.RevisaoPendente
 import br.com.revisaciclo.ui.common.OpcoesAvaliacao
 import br.com.revisaciclo.ui.common.formatarData
+import br.com.revisaciclo.ui.projetos.SeletorProjetoAtivo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RevisoesScreen(
     onIniciarSessao: () -> Unit,
+    onGerenciarProjetos: () -> Unit = {},
     viewModel: RevisoesViewModel = viewModel(factory = RevisoesViewModel.Factory),
 ) {
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
     var avaliando by remember { mutableStateOf<RevisaoPendente?>(null) }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(text = "Revisões") }) },
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Revisões") },
+                actions = { SeletorProjetoAtivo(onGerenciarProjetos = onGerenciarProjetos) },
+            )
+        },
     ) { padding ->
         Box(
             modifier = Modifier

@@ -4,12 +4,23 @@ import br.com.revisaciclo.domain.model.Assunto
 import br.com.revisaciclo.domain.model.AvaliacaoRevisao
 import br.com.revisaciclo.domain.model.Disciplina
 import br.com.revisaciclo.domain.model.EstadoRevisao
+import br.com.revisaciclo.domain.model.ProjetoEstudo
 import br.com.revisaciclo.domain.model.Revisao
 import br.com.revisaciclo.domain.model.StatusRevisao
 import java.time.LocalDate
 
 fun DisciplinaEntity.toDomain(): Disciplina =
-    Disciplina(id = id, nome = nome, cor = cor, criadaEm = criadaEm)
+    Disciplina(id = id, projetoId = projetoId, nome = nome, cor = cor, criadaEm = criadaEm)
+
+fun ProjetoEstudoEntity.toDomain(): ProjetoEstudo =
+    ProjetoEstudo(
+        id = id,
+        nome = nome,
+        descricao = descricao,
+        cor = cor,
+        criadoEm = criadoEm,
+        arquivado = arquivado,
+    )
 
 fun AssuntoEntity.toDomain(): Assunto =
     Assunto(

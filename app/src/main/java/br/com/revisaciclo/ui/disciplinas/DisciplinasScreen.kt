@@ -55,11 +55,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.revisaciclo.domain.model.Disciplina
 import br.com.revisaciclo.ui.common.CORES_DISCIPLINA
+import br.com.revisaciclo.ui.projetos.SeletorProjetoAtivo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DisciplinasScreen(
     onAbrirAssuntos: (Long) -> Unit,
+    onGerenciarProjetos: () -> Unit = {},
     viewModel: DisciplinasViewModel = viewModel(factory = DisciplinasViewModel.Factory),
 ) {
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
@@ -68,7 +70,12 @@ fun DisciplinasScreen(
     var excluindo by remember { mutableStateOf<Disciplina?>(null) }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(text = "Disciplinas") }) },
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Disciplinas") },
+                actions = { SeletorProjetoAtivo(onGerenciarProjetos = onGerenciarProjetos) },
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {

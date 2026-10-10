@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import br.com.revisaciclo.RevisaCicloApp
+import br.com.revisaciclo.domain.agregacao.CalculadoraNotificacoes
 import br.com.revisaciclo.domain.notificacao.DecisorNotificacao
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -30,7 +31,17 @@ class VerificadorRevisoesWorker(
             val preferencias = container.preferenciasRepository.preferencias.first()
             if (preferencias.notificacoesAtivas) {
                 val hoje = LocalDate.now(container.clock)
-                val devidas = container.revisaoRepository.contarRevisoesDevidas(hoje)
+                val projetos = container.projetoRepository.observarProjetos().first()
+                val disciplinas = container.revisaoRepository.observarDisciplinas().first()
+                val assuntos = container.revisaoRepository.observarAssuntos().first()
+                val revisoes = container.revisaoRepository.observarRevisoes().first()
+                val devidas = CalculadoraNotificacoes.contarDevidas(
+                    revisoes = revisoes,
+                    assuntos = assuntos,
+                    disciplinas = disciplinas,
+                    projetos = projetos,
+                    hoje = hoje,
+                )
                 val jaNotificado = container.preferenciasRepository.ultimaNotificacaoDia() == hoje.toEpochDay()
                 val agora = ZonedDateTime.now(container.clock)
 

@@ -22,6 +22,8 @@ class RodaRevisaoUiTest {
         val app = compose.activity.application as RevisaCicloApp
         val viewModel = RodaRevisaoViewModel(
             repository = app.container.revisaoRepository,
+            preferenciasRepository = app.container.preferenciasRepository,
+            projetoRepository = app.container.projetoRepository,
             clock = app.container.clock,
         )
 

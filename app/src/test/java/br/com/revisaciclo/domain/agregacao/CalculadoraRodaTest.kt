@@ -17,7 +17,7 @@ class CalculadoraRodaTest {
         id: Long,
         nome: String = "Matemática",
         cor: Long = 0xFF1565C0,
-    ) = Disciplina(id = id, nome = nome, cor = cor, criadaEm = 1L)
+    ) = Disciplina(id = id, projetoId = 1L, nome = nome, cor = cor, criadaEm = 1L)
 
     private fun assunto(
         id: Long,

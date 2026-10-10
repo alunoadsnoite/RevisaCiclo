@@ -7,7 +7,11 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import br.com.revisaciclo.RevisaCicloApp
 import br.com.revisaciclo.domain.agregacao.CalculadoraRoda
+import br.com.revisaciclo.domain.agregacao.FiltroProjeto
 import br.com.revisaciclo.domain.model.RodaRevisao
+import br.com.revisaciclo.domain.projetos.observarProjetoAtivo
+import br.com.revisaciclo.domain.repository.PreferenciasRepository
+import br.com.revisaciclo.domain.repository.ProjetoRepository
 import br.com.revisaciclo.domain.repository.RevisaoRepository
 import java.time.Clock
 import java.time.LocalDate
@@ -29,6 +33,8 @@ data class RodaRevisaoUiState(
 
 class RodaRevisaoViewModel(
     private val repository: RevisaoRepository,
+    private val preferenciasRepository: PreferenciasRepository,
+    private val projetoRepository: ProjetoRepository,
     private val clock: Clock,
 ) : ViewModel() {
 
@@ -41,11 +47,14 @@ class RodaRevisaoViewModel(
         viewModelScope.launch {
             combine(
                 hoje,
+                observarProjetoAtivo(projetoRepository, preferenciasRepository),
                 repository.observarAssuntos(),
                 repository.observarDisciplinas(),
-            ) { data, assuntos, disciplinas ->
-                val porId = disciplinas.associateBy { it.id }
-                CalculadoraRoda.montar(assuntos, porId, data)
+            ) { data, projeto, assuntos, disciplinas ->
+                val disciplinasDoProjeto = FiltroProjeto.disciplinas(disciplinas, projeto?.id)
+                val porId = disciplinasDoProjeto.associateBy { it.id }
+                val assuntosDoProjeto = FiltroProjeto.assuntos(assuntos, porId.keys)
+                CalculadoraRoda.montar(assuntosDoProjeto, porId, data)
             }.collect { roda ->
                 val atual = _uiState.value
                 val valido = atual.estagioSelecionado
@@ -81,7 +90,12 @@ class RodaRevisaoViewModel(
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val app = this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as RevisaCicloApp
-                RodaRevisaoViewModel(app.container.revisaoRepository, app.container.clock)
+                RodaRevisaoViewModel(
+                    repository = app.container.revisaoRepository,
+                    preferenciasRepository = app.container.preferenciasRepository,
+                    projetoRepository = app.container.projetoRepository,
+                    clock = app.container.clock,
+                )
             }
         }
     }

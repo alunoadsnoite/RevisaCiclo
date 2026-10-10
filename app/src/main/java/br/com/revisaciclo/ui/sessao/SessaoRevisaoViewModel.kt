@@ -8,6 +8,9 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import br.com.revisaciclo.RevisaCicloApp
 import br.com.revisaciclo.domain.model.AvaliacaoRevisao
 import br.com.revisaciclo.domain.model.RevisaoPendente
+import br.com.revisaciclo.domain.projetos.observarProjetoAtivo
+import br.com.revisaciclo.domain.repository.PreferenciasRepository
+import br.com.revisaciclo.domain.repository.ProjetoRepository
 import br.com.revisaciclo.domain.repository.RevisaoRepository
 import br.com.revisaciclo.domain.sessao.SessaoDeRevisao
 import br.com.revisaciclo.domain.sessao.avaliarProximo
@@ -41,6 +44,8 @@ internal fun podeAvaliar(estado: SessaoRevisaoUiState): Boolean =
 
 class SessaoRevisaoViewModel(
     private val repository: RevisaoRepository,
+    private val preferenciasRepository: PreferenciasRepository,
+    private val projetoRepository: ProjetoRepository,
     private val clock: Clock,
 ) : ViewModel() {
 
@@ -94,7 +99,15 @@ class SessaoRevisaoViewModel(
         viewModelScope.launch {
             _uiState.value = SessaoRevisaoUiState(carregando = true)
             val hoje = LocalDate.now(clock)
-            val pendentes = repository.observarRevisoesPendentes().first()
+            val projeto = observarProjetoAtivo(projetoRepository, preferenciasRepository).first()
+            val disciplinaIds = repository.observarDisciplinas()
+                .first()
+                .filter { it.projetoId == projeto?.id }
+                .map { it.id }
+                .toSet()
+            val pendentes = repository.observarRevisoesPendentes()
+                .first()
+                .filter { it.disciplinaId in disciplinaIds }
             val devidas = revisoesDevidas(pendentes, hoje)
             _uiState.value = SessaoRevisaoUiState(
                 carregando = false,
@@ -107,7 +120,12 @@ class SessaoRevisaoViewModel(
         fun factory(): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val app = this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as RevisaCicloApp
-                SessaoRevisaoViewModel(app.container.revisaoRepository, app.container.clock)
+                SessaoRevisaoViewModel(
+                    repository = app.container.revisaoRepository,
+                    preferenciasRepository = app.container.preferenciasRepository,
+                    projetoRepository = app.container.projetoRepository,
+                    clock = app.container.clock,
+                )
             }
         }
     }

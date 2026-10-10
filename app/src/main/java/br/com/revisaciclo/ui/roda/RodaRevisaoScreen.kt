@@ -51,10 +51,12 @@ import br.com.revisaciclo.domain.model.AssuntoRoda
 import br.com.revisaciclo.domain.model.EstagioRoda
 import br.com.revisaciclo.domain.model.SituacaoRevisao
 import br.com.revisaciclo.ui.common.formatarData
+import br.com.revisaciclo.ui.projetos.SeletorProjetoAtivo
 
 @Composable
 fun RodaRevisaoScreen(
     onIniciarSessao: () -> Unit,
+    onGerenciarProjetos: () -> Unit = {},
     viewModel: RodaRevisaoViewModel = viewModel(factory = RodaRevisaoViewModel.Factory),
 ) {
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
@@ -65,7 +67,12 @@ fun RodaRevisaoScreen(
     }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(text = "Estágios") }) },
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Estágios") },
+                actions = { SeletorProjetoAtivo(onGerenciarProjetos = onGerenciarProjetos) },
+            )
+        },
     ) { padding ->
         val roda = estado.roda
         if (estado.carregando || roda == null) {

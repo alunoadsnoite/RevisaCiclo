@@ -8,21 +8,25 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import br.com.revisaciclo.data.local.dao.AssuntoDao
 import br.com.revisaciclo.data.local.dao.DisciplinaDao
+import br.com.revisaciclo.data.local.dao.ProjetoEstudoDao
 import br.com.revisaciclo.data.local.dao.RevisaoDao
 import br.com.revisaciclo.data.local.entity.AssuntoEntity
 import br.com.revisaciclo.data.local.entity.DisciplinaEntity
+import br.com.revisaciclo.data.local.entity.ProjetoEstudoEntity
 import br.com.revisaciclo.data.local.entity.RevisaoEntity
 
 @Database(
     entities = [
+        ProjetoEstudoEntity::class,
         DisciplinaEntity::class,
         AssuntoEntity::class,
         RevisaoEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = true,
 )
 abstract class RevisaCicloDatabase : RoomDatabase() {
+    abstract fun projetoEstudoDao(): ProjetoEstudoDao
     abstract fun disciplinaDao(): DisciplinaDao
     abstract fun assuntoDao(): AssuntoDao
     abstract fun revisaoDao(): RevisaoDao
@@ -30,6 +34,10 @@ abstract class RevisaCicloDatabase : RoomDatabase() {
     companion object {
         private const val NOME_BANCO = "revisaciclo.db"
         private const val MS_POR_DIA = 86_400_000L
+
+        const val NOME_PROJETO_PADRAO = "Meus Estudos"
+        const val ID_PROJETO_PADRAO = 1L
+        const val COR_PROJETO_PADRAO = 0xFF1565C0L
 
         val MIGRACAO_1_2 = object : Migration(1, 2) {
             override fun migrate(db: SupportSQLiteDatabase) {
@@ -96,6 +104,69 @@ abstract class RevisaCicloDatabase : RoomDatabase() {
             }
         }
 
+        /**
+         * Adiciona os projetos de estudo e vincula disciplinas existentes ao projeto padrão.
+         *
+         * As chaves estrangeiras só são ligadas no `onOpen` do Room, portanto a troca de
+         * tabela abaixo não dispara exclusões em cascata e preserva todos os dados.
+         */
+        val MIGRACAO_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `projetos_estudo` (
+                        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        `nome` TEXT NOT NULL,
+                        `descricao` TEXT,
+                        `cor` INTEGER NOT NULL,
+                        `criadoEm` INTEGER NOT NULL,
+                        `arquivado` INTEGER NOT NULL
+                    )
+                    """.trimIndent(),
+                )
+                db.execSQL(
+                    """
+                    INSERT OR IGNORE INTO `projetos_estudo` (`id`, `nome`, `descricao`, `cor`, `criadoEm`, `arquivado`)
+                    VALUES ($ID_PROJETO_PADRAO, '$NOME_PROJETO_PADRAO', NULL, $COR_PROJETO_PADRAO, ${System.currentTimeMillis()}, 0)
+                    """.trimIndent(),
+                )
+
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `disciplinas_new` (
+                        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        `projetoId` INTEGER NOT NULL,
+                        `nome` TEXT NOT NULL,
+                        `cor` INTEGER NOT NULL,
+                        `criadaEm` INTEGER NOT NULL,
+                        FOREIGN KEY(`projetoId`) REFERENCES `projetos_estudo`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE
+                    )
+                    """.trimIndent(),
+                )
+                db.execSQL(
+                    """
+                    INSERT INTO `disciplinas_new` (`id`, `projetoId`, `nome`, `cor`, `criadaEm`)
+                    SELECT `id`, $ID_PROJETO_PADRAO, `nome`, `cor`, `criadaEm` FROM `disciplinas`
+                    """.trimIndent(),
+                )
+                db.execSQL("DROP TABLE `disciplinas`")
+                db.execSQL("ALTER TABLE `disciplinas_new` RENAME TO `disciplinas`")
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_disciplinas_projetoId` ON `disciplinas` (`projetoId`)")
+            }
+        }
+
+        private val CALLBACK_CRIAR_PROJETO_PADRAO = object : RoomDatabase.Callback() {
+            override fun onCreate(db: SupportSQLiteDatabase) {
+                super.onCreate(db)
+                db.execSQL(
+                    """
+                    INSERT OR IGNORE INTO `projetos_estudo` (`id`, `nome`, `descricao`, `cor`, `criadoEm`, `arquivado`)
+                    VALUES ($ID_PROJETO_PADRAO, '$NOME_PROJETO_PADRAO', NULL, $COR_PROJETO_PADRAO, ${System.currentTimeMillis()}, 0)
+                    """.trimIndent(),
+                )
+            }
+        }
+
         @Volatile
         private var instancia: RevisaCicloDatabase? = null
 
@@ -106,7 +177,8 @@ abstract class RevisaCicloDatabase : RoomDatabase() {
                     RevisaCicloDatabase::class.java,
                     NOME_BANCO,
                 )
-                    .addMigrations(MIGRACAO_1_2)
+                    .addMigrations(MIGRACAO_1_2, MIGRACAO_2_3)
+                    .addCallback(CALLBACK_CRIAR_PROJETO_PADRAO)
                     .build()
                     .also { instancia = it }
             }

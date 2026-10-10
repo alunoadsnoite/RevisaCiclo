@@ -3,9 +3,11 @@ package br.com.revisaciclo
 import android.content.Context
 import br.com.revisaciclo.data.local.RevisaCicloDatabase
 import br.com.revisaciclo.data.preferencias.criarPreferenciasRepository
+import br.com.revisaciclo.data.repository.OfflineProjetoRepository
 import br.com.revisaciclo.data.repository.OfflineRevisaoRepository
 import br.com.revisaciclo.domain.notificacao.AgendadorNotificacoes
 import br.com.revisaciclo.domain.repository.PreferenciasRepository
+import br.com.revisaciclo.domain.repository.ProjetoRepository
 import br.com.revisaciclo.domain.repository.RevisaoRepository
 import br.com.revisaciclo.notificacao.NotificadorRevisoes
 import br.com.revisaciclo.notificacao.WorkManagerAgendadorNotificacoes
@@ -27,6 +29,10 @@ class AppContainer(context: Context) {
 
     val revisaoRepository: RevisaoRepository by lazy {
         OfflineRevisaoRepository(database, preferenciasRepository, clock)
+    }
+
+    val projetoRepository: ProjetoRepository by lazy {
+        OfflineProjetoRepository(database, preferenciasRepository, clock)
     }
 
     val agendadorNotificacoes: AgendadorNotificacoes by lazy {
