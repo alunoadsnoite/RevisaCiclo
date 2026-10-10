@@ -3,9 +3,10 @@
 Aplicativo Android nativo de **revisão espaçada** para estudantes brasileiros.
 
 O aplicativo já conta com o motor de revisão espaçada por ciclos, cadastro de
-disciplinas, cadastro de assuntos com data de estudo e a conclusão/avaliação das
-revisões pendentes. Não há dados de demonstração: o usuário começa com a base
-vazia e cria o próprio conteúdo.
+disciplinas, cadastro de assuntos com data de estudo, a conclusão/avaliação das
+revisões pendentes, a **roda circular de estágios**, a **sessão de revisão** em
+sequência e a aba de **estatísticas**. Não há dados de demonstração: o usuário
+começa com a base vazia e cria o próprio conteúdo.
 
 ## Stack
 
@@ -100,14 +101,19 @@ br.com.revisaciclo
 ├── domain
 │   ├── model                # modelos e enums de domínio
 │   ├── repository           # interface do repositório
-│   └── scheduler            # MotorRevisaoEspacada (ciclos e intervalos)
+│   ├── scheduler            # MotorRevisaoEspacada (ciclos e intervalos)
+│   ├── agregacao            # cálculos da roda e das estatísticas (puros e testáveis)
+│   └── sessao               # SessaoDeRevisao (fila de revisões devidas)
 ├── ui
 │   ├── theme                # tema claro e escuro (Material 3)
-│   ├── common               # formatação de data, seleção de cor e data
+│   ├── common               # formatação de data, seleção de cor e avaliação
 │   ├── dashboard            # ViewModel + tela do Dashboard
 │   ├── disciplinas          # CRUD de disciplinas
 │   ├── assuntos             # CRUD de assuntos por disciplina
-│   └── revisoes             # revisões pendentes e avaliação
+│   ├── revisoes             # revisões pendentes e avaliação
+│   ├── roda                 # roda circular de estágios
+│   ├── sessao               # sessão de revisão em sequência
+│   └── estatisticas         # resumo e evolução diária
 └── navigation               # Navigation Compose (barra inferior + rotas)
 ```
 
@@ -137,26 +143,55 @@ Após o último intervalo o assunto continua sendo revisado a cada 30 dias.
 A próxima data é calculada a partir da data de estudo (agendamento inicial) ou da
 data em que a revisão foi avaliada.
 
+## Roda de estágios
+
+A guia **Estágios** apresenta a roda circular com os cinco estágios
+(1, 3, 7, 15 e 30 dias), cada um colorido conforme a situação:
+
+- **Vermelho/Atrasada** — revisão vencida;
+- **Azul/Terciário/Vence hoje** — revisão do dia;
+- **Primário** — demais assuntos dentro do prazo.
+
+Toque num segmento do anel ou numa linha da legenda para ver os assuntos do
+estágio (com a data da próxima revisão e a situação). A legenda e a descrição de
+acessibilidade reproduzem o conteúdo do desenho para leitores de tela.
+
+## Sessão de revisão
+
+O botão **Iniciar sessão** (em Estágios ou Revisões) abre uma sessão com fila de
+revisões devidas (atrasadas ou agendadas para hoje). Cada item é avaliado uma
+única vez (Esqueci, Difícil, Bom ou Fácil) e, ao final, um resumo mostra a
+quantidade de avaliações de cada tipo. A avaliação é persistida antes de avançar;
+se a gravação falhar, o item permanece na fila e a tentativa pode ser repetida.
+
 ## Estado atual
 
 - Estrutura de projeto, tema claro/escuro e navegação com barra inferior
-  (Início, Disciplinas e Revisões).
+  (Início, **Estágios**, Disciplinas, Revisões e **Estatísticas**).
 - Banco Room com migração e motor de revisão espaçada (`domain/scheduler`).
 - Telas em português brasileiro:
   - **Dashboard**: progresso geral, contadores, próxima revisão e progresso por
     disciplina;
+  - **Estágios**: roda circular dos 5 estágios com toque/legenda e descrição
+    acessível;
   - **Disciplinas**: criar, editar e excluir;
   - **Assuntos**: criar, editar e excluir, com data de estudo;
   - **Revisões**: lista de revisões pendentes/atrasadas e avaliação (Esqueci,
-    Difícil, Bom, Fácil).
+    Difícil, Bom, Fácil);
+  - **Sessão de revisão**: fila de devidas com resumo final;
+  - **Estatísticas**: revisões concluídas, pendentes e atrasadas + evolução
+    diária em 7 e 30 dias.
 - Sem dados de demonstração (base inicia vazia).
-- Testes unitários do Dashboard e do motor de revisão espaçada.
+- Testes unitários do Dashboard, do motor de revisão espaçada, da roda
+  (agregação e geometria do toque), das estatísticas e da sessão de revisão.
+- Teste de interface Compose (`androidTest`) para a roda de estágios
+  (executável com `connectedDebugAndroidTest`).
 
 ## Próximos passos recomendados
 
 1. Notificações/lembretes locais (sem serviços pagos).
 2. Filtros e ordenação adicionais na lista de assuntos/revisões.
-3. Relatórios/histórico de revisões concluídas.
+3. Exportação e importação dos dados (backup).
 4. Migrar a injeção de dependências manual para Hilt, se necessário.
 
 ## Licença

@@ -18,6 +18,7 @@ interface RevisaoDao {
         SELECT r.id AS revisaoId,
                a.id AS assuntoId,
                a.nome AS assuntoTitulo,
+               a.descricao AS assuntoDescricao,
                d.id AS disciplinaId,
                d.nome AS disciplinaNome,
                d.cor AS disciplinaCor,

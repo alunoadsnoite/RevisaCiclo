@@ -39,11 +39,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.revisaciclo.domain.model.AvaliacaoRevisao
 import br.com.revisaciclo.domain.model.RevisaoPendente
+import br.com.revisaciclo.ui.common.OpcoesAvaliacao
 import br.com.revisaciclo.ui.common.formatarData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RevisoesScreen(
+    onIniciarSessao: () -> Unit,
     viewModel: RevisoesViewModel = viewModel(factory = RevisoesViewModel.Factory),
 ) {
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
@@ -58,20 +60,36 @@ fun RevisoesScreen(
                 .fillMaxSize(),
         ) {
             if (!estado.carregando && estado.pendentes.isEmpty()) {
-                Text(
-                    text = "Nenhuma revisão pendente. Tudo em dia!",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                Column(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .padding(32.dp),
-                )
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = "Nenhuma revisão pendente. Tudo em dia!",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    FilledTonalButton(onClick = onIniciarSessao) {
+                        Text(text = "Iniciar sessão")
+                    }
+                }
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
+                    item {
+                        FilledTonalButton(
+                            onClick = onIniciarSessao,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(text = "Iniciar sessão de revisão")
+                        }
+                    }
                     if (estado.atrasadas > 0) {
                         item {
                             Text(
@@ -173,50 +191,11 @@ private fun DialogoAvaliacao(
                     text = pendente.assuntoTitulo,
                     style = MaterialTheme.typography.titleSmall,
                 )
-                OpcaoAvaliacao(
-                    titulo = "Esqueci",
-                    descricao = "Reinicia o ciclo para 1 dia",
-                    onClick = { onAvaliar(AvaliacaoRevisao.ESQUECI) },
-                )
-                OpcaoAvaliacao(
-                    titulo = "Difícil",
-                    descricao = "Repete o ciclo atual",
-                    onClick = { onAvaliar(AvaliacaoRevisao.DIFICIL) },
-                )
-                OpcaoAvaliacao(
-                    titulo = "Bom",
-                    descricao = "Avança um ciclo",
-                    onClick = { onAvaliar(AvaliacaoRevisao.BOM) },
-                )
-                OpcaoAvaliacao(
-                    titulo = "Fácil",
-                    descricao = "Avança dois ciclos",
-                    onClick = { onAvaliar(AvaliacaoRevisao.FACIL) },
-                )
+                OpcoesAvaliacao(onAvaliar = onAvaliar)
             }
         },
         confirmButton = {
             TextButton(onClick = onDispensar) { Text(text = "Cancelar") }
         },
     )
-}
-
-@Composable
-private fun OpcaoAvaliacao(
-    titulo: String,
-    descricao: String,
-    onClick: () -> Unit,
-) {
-    FilledTonalButton(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.Start,
-        ) {
-            Text(text = titulo, fontWeight = FontWeight.SemiBold)
-            Text(text = descricao, style = MaterialTheme.typography.bodySmall)
-        }
-    }
 }

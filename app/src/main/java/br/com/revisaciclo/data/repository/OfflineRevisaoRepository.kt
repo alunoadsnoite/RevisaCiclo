@@ -63,6 +63,7 @@ class OfflineRevisaoRepository(
                     revisaoId = linha.revisaoId,
                     assuntoId = linha.assuntoId,
                     assuntoTitulo = linha.assuntoTitulo,
+                    assuntoDescricao = linha.assuntoDescricao,
                     disciplinaId = linha.disciplinaId,
                     disciplinaNome = linha.disciplinaNome,
                     disciplinaCor = linha.disciplinaCor,

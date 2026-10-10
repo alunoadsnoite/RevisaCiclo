@@ -4,6 +4,7 @@ data class RevisaoPendenteRow(
     val revisaoId: Long,
     val assuntoId: Long,
     val assuntoTitulo: String,
+    val assuntoDescricao: String? = null,
     val disciplinaId: Long,
     val disciplinaNome: String,
     val disciplinaCor: Long,

@@ -5,6 +5,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -23,12 +25,18 @@ import androidx.navigation.navArgument
 import br.com.revisaciclo.ui.assuntos.AssuntosScreen
 import br.com.revisaciclo.ui.dashboard.DashboardScreen
 import br.com.revisaciclo.ui.disciplinas.DisciplinasScreen
+import br.com.revisaciclo.ui.estatisticas.EstatisticasScreen
 import br.com.revisaciclo.ui.revisoes.RevisoesScreen
+import br.com.revisaciclo.ui.roda.RodaRevisaoScreen
+import br.com.revisaciclo.ui.sessao.SessaoRevisaoScreen
 
 object Destinos {
     const val DASHBOARD = "dashboard"
+    const val RODA = "roda"
     const val DISCIPLINAS = "disciplinas"
     const val REVISOES = "revisoes"
+    const val ESTATISTICAS = "estatisticas"
+    const val SESSAO = "sessao"
     const val ASSUNTOS = "assuntos/{disciplinaId}"
     const val ARG_DISCIPLINA_ID = "disciplinaId"
 
@@ -48,8 +56,10 @@ fun RevisaCicloNavHost(
     val rotaAtual = backStackEntry?.destination?.route
     val abas = listOf(
         Aba(Destinos.DASHBOARD, "Início") to Icons.Default.Home,
+        Aba(Destinos.RODA, "Estágios") to Icons.Default.Refresh,
         Aba(Destinos.DISCIPLINAS, "Disciplinas") to Icons.AutoMirrored.Filled.List,
         Aba(Destinos.REVISOES, "Revisões") to Icons.Default.CheckCircle,
+        Aba(Destinos.ESTATISTICAS, "Estatísticas") to Icons.Default.Info,
     )
     val mostrarBarra = abas.any { it.first.destino == rotaAtual }
 
@@ -85,6 +95,11 @@ fun RevisaCicloNavHost(
             composable(Destinos.DASHBOARD) {
                 DashboardScreen()
             }
+            composable(Destinos.RODA) {
+                RodaRevisaoScreen(
+                    onIniciarSessao = { navController.navigate(Destinos.SESSAO) },
+                )
+            }
             composable(Destinos.DISCIPLINAS) {
                 DisciplinasScreen(
                     onAbrirAssuntos = { disciplinaId ->
@@ -93,7 +108,17 @@ fun RevisaCicloNavHost(
                 )
             }
             composable(Destinos.REVISOES) {
-                RevisoesScreen()
+                RevisoesScreen(
+                    onIniciarSessao = { navController.navigate(Destinos.SESSAO) },
+                )
+            }
+            composable(Destinos.ESTATISTICAS) {
+                EstatisticasScreen()
+            }
+            composable(Destinos.SESSAO) {
+                SessaoRevisaoScreen(
+                    onSair = { navController.popBackStack() },
+                )
             }
             composable(
                 route = Destinos.ASSUNTOS,
