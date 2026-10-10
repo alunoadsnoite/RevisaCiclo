@@ -20,6 +20,7 @@ class RevisaCicloApp : Application() {
         super.onCreate()
         CanalNotificacao.criar(this)
         escopo.launch {
+            container.reconciliadorRestauracao.reconciliar()
             val preferencias = container.preferenciasRepository.preferencias.first()
             container.agendadorNotificacoes.garantirAgendado(preferencias)
         }

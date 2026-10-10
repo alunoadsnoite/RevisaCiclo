@@ -13,6 +13,12 @@ interface RevisaoDao {
     @Query("SELECT * FROM revisoes ORDER BY agendadaPara")
     fun observarTodas(): Flow<List<RevisaoEntity>>
 
+    @Query("SELECT * FROM revisoes ORDER BY id")
+    suspend fun listarTodas(): List<RevisaoEntity>
+
+    @Query("DELETE FROM revisoes")
+    suspend fun limpar()
+
     @Query(
         """
         SELECT r.id AS revisaoId,

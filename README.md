@@ -5,8 +5,10 @@ Aplicativo Android nativo de **revisão espaçada** para estudantes brasileiros.
 O aplicativo já conta com o motor de revisão espaçada por ciclos, cadastro de
 disciplinas, cadastro de assuntos com data de estudo, a conclusão/avaliação das
 revisões pendentes, a **roda circular de estágios**, a **sessão de revisão** em
-sequência e a aba de **estatísticas**. Não há dados de demonstração: o usuário
-começa com a base vazia e cria o próprio conteúdo.
+sequência, a aba de **estatísticas** e **projetos de estudo** independentes. Também
+oferece **backup completo** (`.revisaciclo`), **exportação JSON** portátil e
+**restauração segura** com recuperação de falhas. Não há dados de demonstração: o
+usuário começa com a base vazia e cria o próprio conteúdo.
 
 ## Stack
 
@@ -97,12 +99,16 @@ br.com.revisaciclo
 │   │   ├── dao
 │   │   ├── entity
 │   │   └── model            # projeções de consulta
+│   ├── preferencias         # DataStore (preferências e DataStore de operação)
+│   ├── backup               # backup/restauração: Room, SAF e snapshot
 │   └── repository           # implementação do repositório (OfflineRevisaoRepository)
 ├── domain
 │   ├── model                # modelos e enums de domínio
 │   ├── repository           # interface do repositório
 │   ├── scheduler            # MotorRevisaoEspacada (ciclos e intervalos)
 │   ├── agregacao            # cálculos da roda e das estatísticas (puros e testáveis)
+│   ├── backup               # formato, serialização, validação e serviços de backup
+│   ├── projetos             # seleção e observação do projeto ativo
 │   └── sessao               # SessaoDeRevisao (fila de revisões devidas)
 ├── ui
 │   ├── theme                # tema claro e escuro (Material 3)
@@ -113,17 +119,20 @@ br.com.revisaciclo
 │   ├── revisoes             # revisões pendentes e avaliação
 │   ├── roda                 # roda circular de estágios
 │   ├── sessao               # sessão de revisão em sequência
+│   ├── configuracoes        # preferências e backup/restauração
 │   └── estatisticas         # resumo e evolução diária
 └── navigation               # Navigation Compose (barra inferior + rotas)
 ```
 
 ### Banco de dados (Room)
 
-Versão atual do schema: **2** (schema exportado em `app/schemas/`). A migração
+Versão atual do schema: **3** (schemas exportados em `app/schemas/`). A migração
 `1 → 2` converte as datas de milissegundos para *epoch day* e adiciona os campos
-de agendamento, sem apagar dados (`MIGRACAO_1_2` em `RevisaCicloDatabase`).
+de agendamento; a migração `2 → 3` cria a tabela `projetos_estudo` e associa cada
+disciplina a um projeto. Nenhuma migração apaga dados.
 
-- `disciplinas` — disciplinas de estudo.
+- `projetos_estudo` — projetos (concurso, faculdade, estudos pessoais).
+- `disciplinas` — disciplinas de um projeto.
 - `assuntos` — assuntos de uma disciplina, com data de estudo, estado e próxima revisão.
 - `revisoes` — revisões agendadas/concluídas por assunto, com avaliação.
 
@@ -164,6 +173,21 @@ revisões devidas (atrasadas ou agendadas para hoje). Cada item é avaliado uma
 quantidade de avaliações de cada tipo. A avaliação é persistida antes de avançar;
 se a gravação falhar, o item permanece na fila e a tentativa pode ser repetida.
 
+## Backup, exportação e restauração
+
+Em **Configurações → Backup e dados**:
+
+- **Exportar** gera um **backup completo** (`.revisaciclo`) restaurável pelo
+  aplicativo ou um **JSON portátil** para uso em outras ferramentas.
+- **Restaurar** lê um `.revisaciclo`, valida a integridade (SHA-256) e o conteúdo,
+  mostra uma prévia e, após confirmação, **substitui todos os dados** de forma
+  atômica, com snapshot de segurança e recuperação automática em caso de
+  interrupção.
+
+Detalhes do formato em [docs/BACKUP_FORMAT.md](docs/BACKUP_FORMAT.md) e do
+protocolo em [docs/RESTORE_SAFETY.md](docs/RESTORE_SAFETY.md). Informações para
+distribuição livre em [docs/FDROID_READINESS.md](docs/FDROID_READINESS.md).
+
 ## Estado atual
 
 - Estrutura de projeto, tema claro/escuro e navegação com barra inferior
@@ -179,20 +203,24 @@ se a gravação falhar, o item permanece na fila e a tentativa pode ser repetida
   - **Revisões**: lista de revisões pendentes/atrasadas e avaliação (Esqueci,
     Difícil, Bom, Fácil);
   - **Sessão de revisão**: fila de devidas com resumo final;
+  - **Configurações**: notificações, meta diária, tema, intervalos do ciclo e
+    backup/restauração;
   - **Estatísticas**: revisões concluídas, pendentes e atrasadas + evolução
     diária em 7 e 30 dias.
+- Projetos de estudo independentes, com projeto ativo e arquivamento.
+- Backup completo (`.revisaciclo`), exportação JSON portátil e restauração segura.
 - Sem dados de demonstração (base inicia vazia).
 - Testes unitários do Dashboard, do motor de revisão espaçada, da roda
-  (agregação e geometria do toque), das estatísticas e da sessão de revisão.
+  (agregação e geometria do toque), das estatísticas, da sessão de revisão e do
+  backup (JSON, serialização, validação e reconciliação).
 - Teste de interface Compose (`androidTest`) para a roda de estágios
   (executável com `connectedDebugAndroidTest`).
 
 ## Próximos passos recomendados
 
-1. Notificações/lembretes locais (sem serviços pagos).
-2. Filtros e ordenação adicionais na lista de assuntos/revisões.
-3. Exportação e importação dos dados (backup).
-4. Migrar a injeção de dependências manual para Hilt, se necessário.
+1. Filtros e ordenação adicionais na lista de assuntos/revisões.
+2. Migrar a injeção de dependências manual para Hilt, se necessário.
+3. Notificações por projeto ativo (hoje o lembrete é global).
 
 ## Licença
 

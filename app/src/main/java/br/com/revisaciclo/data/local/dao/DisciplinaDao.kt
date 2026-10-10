@@ -13,11 +13,17 @@ interface DisciplinaDao {
     @Query("SELECT * FROM disciplinas ORDER BY nome")
     fun observarTodas(): Flow<List<DisciplinaEntity>>
 
+    @Query("SELECT * FROM disciplinas ORDER BY id")
+    suspend fun listarTodas(): List<DisciplinaEntity>
+
     @Query("SELECT * FROM disciplinas WHERE id = :id")
     fun observarPorId(id: Long): Flow<DisciplinaEntity?>
 
     @Query("SELECT * FROM disciplinas WHERE id = :id")
     suspend fun buscarPorId(id: Long): DisciplinaEntity?
+
+    @Query("DELETE FROM disciplinas")
+    suspend fun limpar()
 
     @Query(
         """

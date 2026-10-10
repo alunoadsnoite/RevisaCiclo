@@ -12,6 +12,9 @@ interface AssuntoDao {
     @Query("SELECT * FROM assuntos ORDER BY nome")
     fun observarTodos(): Flow<List<AssuntoEntity>>
 
+    @Query("SELECT * FROM assuntos ORDER BY id")
+    suspend fun listarTodos(): List<AssuntoEntity>
+
     @Query("SELECT * FROM assuntos WHERE disciplinaId = :disciplinaId ORDER BY nome")
     fun observarPorDisciplina(disciplinaId: Long): Flow<List<AssuntoEntity>>
 
@@ -20,6 +23,9 @@ interface AssuntoDao {
 
     @Query("SELECT * FROM assuntos WHERE id = :id")
     suspend fun buscarPorId(id: Long): AssuntoEntity?
+
+    @Query("DELETE FROM assuntos")
+    suspend fun limpar()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun inserir(assunto: AssuntoEntity): Long

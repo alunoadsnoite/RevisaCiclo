@@ -2,6 +2,7 @@ package br.com.revisaciclo.ui.configuracoes
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -14,10 +15,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,6 +34,8 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -38,6 +43,7 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,33 +51,76 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import br.com.revisaciclo.domain.backup.BackupFormato
+import br.com.revisaciclo.domain.backup.ResumoBackup
 import br.com.revisaciclo.domain.model.Preferencias
 import br.com.revisaciclo.domain.model.TemaApp
 import br.com.revisaciclo.domain.preferencias.ResultadoIntervalos
 import br.com.revisaciclo.domain.preferencias.ValidadorIntervalos
 import java.time.LocalTime
 import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConfiguracoesScreen(
     onVoltar: () -> Unit,
     viewModel: ConfiguracoesViewModel = viewModel(factory = ConfiguracoesViewModel.Factory),
+    backupViewModel: BackupViewModel = viewModel(factory = BackupViewModel.Factory),
 ) {
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
+    val estadoBackup by backupViewModel.uiState.collectAsStateWithLifecycle()
     val contexto = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
     var dialogoHorario by remember { mutableStateOf(false) }
     var dialogoIntervalos by remember { mutableStateOf(false) }
+    var dialogoExportar by remember { mutableStateOf(false) }
 
     val lancadorPermissao = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
     ) { concedida ->
         viewModel.definirNotificacoesAtivas(concedida)
+    }
+
+    val lancadorSalvarBackup = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument(BackupFormato.MIME),
+    ) { uri -> uri?.let { backupViewModel.exportarBackup(it.toString()) } }
+
+    val lancadorSalvarJson = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument(BackupFormato.MIME),
+    ) { uri -> uri?.let { backupViewModel.exportarJson(it.toString()) } }
+
+    val lancadorAbrirBackup = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+    ) { uri -> uri?.let { backupViewModel.analisarBackup(it.toString()) } }
+
+    val mensagemBackup = estadoBackup.mensagem
+    LaunchedEffect(mensagemBackup) {
+        if (mensagemBackup != null) {
+            snackbarHostState.showSnackbar(mensagemBackup)
+            backupViewModel.limparMensagem()
+        }
+    }
+
+    val compartilharUri = estadoBackup.compartilhar
+    LaunchedEffect(compartilharUri) {
+        if (compartilharUri != null) {
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = BackupFormato.MIME
+                putExtra(Intent.EXTRA_STREAM, compartilharUri.toUri())
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            contexto.startActivity(Intent.createChooser(intent, "Compartilhar backup"))
+            backupViewModel.consumirCompartilhamento()
+        }
     }
 
     Scaffold(
@@ -88,6 +137,7 @@ fun ConfiguracoesScreen(
                 },
             )
         },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { padding ->
         Column(
             modifier = Modifier
@@ -124,6 +174,17 @@ fun ConfiguracoesScreen(
                 onEditar = { dialogoIntervalos = true },
             )
 
+            SecaoBackup(
+                ocupado = estadoBackup.ocupado,
+                onExportar = { dialogoExportar = true },
+                onCompartilhar = backupViewModel::compartilharBackup,
+                onRestaurar = {
+                    lancadorAbrirBackup.launch(
+                        arrayOf(BackupFormato.MIME, "application/octet-stream", "*/*"),
+                    )
+                },
+            )
+
             SecaoSobre(versao = versaoDoApp(contexto))
         }
     }
@@ -154,6 +215,211 @@ fun ConfiguracoesScreen(
             },
         )
     }
+
+    if (dialogoExportar) {
+        DialogoExportar(
+            onBackup = {
+                dialogoExportar = false
+                lancadorSalvarBackup.launch(nomeArquivoBackup())
+            },
+            onJson = {
+                dialogoExportar = false
+                lancadorSalvarJson.launch(nomeArquivoJson())
+            },
+            onDispensar = { dialogoExportar = false },
+        )
+    }
+
+    estadoBackup.previa?.let { previa ->
+        DialogoConfirmarRestauracao(
+            resumo = previa.resumo,
+            restaurando = estadoBackup.restaurando,
+            onConfirmar = backupViewModel::confirmarRestauracao,
+            onCancelar = backupViewModel::descartarPrevia,
+        )
+    }
+
+    if (estadoBackup.analisando) {
+        AlertDialog(
+            onDismissRequest = {},
+            confirmButton = {},
+            title = { Text(text = "Lendo backup") },
+            text = { Text(text = "Verificando a integridade do arquivo…") },
+        )
+    }
+
+    if (estadoBackup.restaurando) {
+        AlertDialog(
+            onDismissRequest = {},
+            confirmButton = {},
+            title = { Text(text = "Restaurando") },
+            text = { Text(text = "Substituindo os dados. Não feche o aplicativo.") },
+        )
+    }
+}
+
+private fun nomeArquivoBackup(): String {
+    val hoje = java.time.LocalDate.now()
+    return BackupFormato.nomeSugerido(hoje.year, hoje.monthValue, hoje.dayOfMonth)
+}
+
+private fun nomeArquivoJson(): String {
+    val hoje = java.time.LocalDate.now()
+    return "revisaciclo-export-%04d%02d%02d.json".format(
+        hoje.year,
+        hoje.monthValue,
+        hoje.dayOfMonth,
+    )
+}
+
+@Composable
+private fun SecaoBackup(
+    ocupado: Boolean,
+    onExportar: () -> Unit,
+    onCompartilhar: () -> Unit,
+    onRestaurar: () -> Unit,
+) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            Text(text = "Backup e dados", style = MaterialTheme.typography.titleMedium)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Crie um backup completo para guardar ou transferir seus dados. " +
+                    "A restauração substitui todos os dados atuais do aplicativo.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                OutlinedButton(
+                    onClick = onExportar,
+                    enabled = !ocupado,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(text = "Exportar")
+                }
+                OutlinedButton(
+                    onClick = onRestaurar,
+                    enabled = !ocupado,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(text = "Restaurar")
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedButton(
+                onClick = onCompartilhar,
+                enabled = !ocupado,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Share,
+                    contentDescription = null,
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = "Compartilhar backup")
+            }
+        }
+    }
+}
+
+@Composable
+private fun DialogoExportar(
+    onBackup: () -> Unit,
+    onJson: () -> Unit,
+    onDispensar: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDispensar,
+        title = { Text(text = "Exportar dados") },
+        text = {
+            Column {
+                Text(
+                    text = "Escolha o formato de exportação.",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = "Backup completo (.revisaciclo): pode ser restaurado pelo aplicativo.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "JSON portátil (.json): formato aberto para leitura em outras " +
+                        "ferramentas.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onBackup) { Text(text = "Backup completo") }
+        },
+        dismissButton = {
+            TextButton(onClick = onJson) { Text(text = "JSON portátil") }
+        },
+    )
+}
+
+@Composable
+private fun DialogoConfirmarRestauracao(
+    resumo: ResumoBackup,
+    restaurando: Boolean,
+    onConfirmar: () -> Unit,
+    onCancelar: () -> Unit,
+) {
+    val data = remember(resumo.criadoEm) {
+        java.time.format.DateTimeFormatter
+            .ofPattern("dd/MM/yyyy HH:mm")
+            .withZone(java.time.ZoneId.systemDefault())
+            .format(resumo.criadoEm)
+    }
+    AlertDialog(
+        onDismissRequest = { if (!restaurando) onCancelar() },
+        title = { Text(text = "Restaurar backup") },
+        text = {
+            Column {
+                Text(
+                    text = "Isto substitui TODOS os dados atuais pelos dados do arquivo. " +
+                        "Uma cópia de segurança do estado atual é feita antes.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(text = "Criado em: $data", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    text = "Projetos: ${resumo.projetos}",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Text(
+                    text = "Disciplinas: ${resumo.disciplinas}",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Text(
+                    text = "Assuntos: ${resumo.assuntos}",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Text(
+                    text = "Revisões: ${resumo.revisoes}",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirmar, enabled = !restaurando) {
+                Text(text = "Restaurar")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onCancelar, enabled = !restaurando) {
+                Text(text = "Cancelar")
+            }
+        },
+    )
 }
 
 @Composable
@@ -184,6 +450,9 @@ private fun SecaoNotificacoes(
                 Switch(
                     checked = preferencias.notificacoesAtivas,
                     onCheckedChange = onAtivar,
+                    modifier = Modifier.semantics {
+                        contentDescription = "Lembretes de revisão"
+                    },
                 )
             }
             Spacer(modifier = Modifier.height(12.dp))
