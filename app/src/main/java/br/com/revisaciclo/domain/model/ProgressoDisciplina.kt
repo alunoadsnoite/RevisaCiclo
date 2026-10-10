@@ -4,9 +4,13 @@ data class ProgressoDisciplina(
     val disciplinaId: Long,
     val nome: String,
     val cor: Long,
-    val totalRevisoes: Int,
-    val concluidas: Int,
+    val totalAssuntos: Int,
+    val assuntosAtrasados: Int,
 ) {
     val progresso: Float
-        get() = if (totalRevisoes == 0) 0f else concluidas.toFloat() / totalRevisoes
+        get() = if (totalAssuntos == 0) {
+            0f
+        } else {
+            (totalAssuntos - assuntosAtrasados).toFloat() / totalAssuntos
+        }
 }

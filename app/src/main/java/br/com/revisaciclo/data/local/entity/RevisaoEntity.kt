@@ -25,5 +25,5 @@ data class RevisaoEntity(
     val status: String,
     val intervaloDias: Int,
     val indiceCiclo: Int,
-    val qualidade: Int? = null,
+    val avaliacao: String? = null,
 )

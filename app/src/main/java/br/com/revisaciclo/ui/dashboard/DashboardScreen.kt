@@ -40,17 +40,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.revisaciclo.domain.model.ProgressoDisciplina
 import br.com.revisaciclo.domain.model.Revisao
 import br.com.revisaciclo.domain.model.StatusRevisao
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import br.com.revisaciclo.ui.common.formatarData
 import kotlin.math.roundToInt
-
-private val FORMATO_DATA: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.forLanguageTag("pt-BR"))
-
-private fun formatarData(millis: Long): String =
-    Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate().format(FORMATO_DATA)
 
 @Composable
 fun DashboardScreen(
@@ -76,10 +67,6 @@ private fun DashboardContent(estado: DashboardUiState) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            if (estado.usaDadosDeDemonstracao) {
-                SetaoDemonstracao()
-            }
-
             CartaoProgressoGeral(estado)
 
             LinhaIndicadores(estado)
@@ -102,28 +89,6 @@ private fun DashboardContent(estado: DashboardUiState) {
                     CartaoDisciplina(progresso)
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun SetaoDemonstracao() {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.tertiaryContainer,
-        contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-        shape = MaterialTheme.shapes.medium,
-    ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(
-                text = "Dados de demonstração",
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold,
-            )
-            Text(
-                text = "Os registros exibidos são fictícios e servem apenas para validar a estrutura inicial do aplicativo.",
-                style = MaterialTheme.typography.bodySmall,
-            )
         }
     }
 }
@@ -319,7 +284,7 @@ private fun CartaoDisciplina(progresso: ProgressoDisciplina) {
                     modifier = Modifier.weight(1f),
                 )
                 Text(
-                    text = "${progresso.concluidas}/${progresso.totalRevisoes}",
+                    text = "${progresso.assuntosAtrasados} atrasado(s)",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

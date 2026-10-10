@@ -1,9 +1,12 @@
 package br.com.revisaciclo.data.local.entity
 
 import br.com.revisaciclo.domain.model.Assunto
+import br.com.revisaciclo.domain.model.AvaliacaoRevisao
 import br.com.revisaciclo.domain.model.Disciplina
+import br.com.revisaciclo.domain.model.EstadoRevisao
 import br.com.revisaciclo.domain.model.Revisao
 import br.com.revisaciclo.domain.model.StatusRevisao
+import java.time.LocalDate
 
 fun DisciplinaEntity.toDomain(): Disciplina =
     Disciplina(id = id, nome = nome, cor = cor, criadaEm = criadaEm)
@@ -12,19 +15,26 @@ fun AssuntoEntity.toDomain(): Assunto =
     Assunto(
         id = id,
         disciplinaId = disciplinaId,
-        nome = nome,
-        dificuldade = dificuldade,
-        criadoEm = criadoEm,
+        titulo = titulo,
+        descricao = descricao,
+        dataEstudo = LocalDate.ofEpochDay(dataEstudo),
+        estadoRevisao = runCatching { EstadoRevisao.valueOf(estadoRevisao) }
+            .getOrDefault(EstadoRevisao.NOVO),
+        indiceCiclo = indiceCiclo,
+        proximaRevisao = proximaRevisao?.let { LocalDate.ofEpochDay(it) },
     )
 
 fun RevisaoEntity.toDomain(): Revisao =
     Revisao(
         id = id,
         assuntoId = assuntoId,
-        agendadaPara = agendadaPara,
-        concluidaEm = concluidaEm,
-        status = runCatching { StatusRevisao.valueOf(status) }.getOrDefault(StatusRevisao.PENDENTE),
+        agendadaPara = LocalDate.ofEpochDay(agendadaPara),
+        concluidaEm = concluidaEm?.let { LocalDate.ofEpochDay(it) },
+        status = runCatching { StatusRevisao.valueOf(status) }
+            .getOrDefault(StatusRevisao.PENDENTE),
         intervaloDias = intervaloDias,
         indiceCiclo = indiceCiclo,
-        qualidade = qualidade,
+        avaliacao = avaliacao?.let { runCatching { AvaliacaoRevisao.valueOf(it) }.getOrNull() },
     )
+
+fun LocalDate.toEpochDayLong(): Long = toEpochDay()

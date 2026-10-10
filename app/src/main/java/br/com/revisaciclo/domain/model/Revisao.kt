@@ -1,5 +1,7 @@
 package br.com.revisaciclo.domain.model
 
+import java.time.LocalDate
+
 enum class StatusRevisao {
     PENDENTE,
     CONCLUIDA,
@@ -9,10 +11,10 @@ enum class StatusRevisao {
 data class Revisao(
     val id: Long,
     val assuntoId: Long,
-    val agendadaPara: Long,
-    val concluidaEm: Long?,
+    val agendadaPara: LocalDate,
+    val concluidaEm: LocalDate?,
     val status: StatusRevisao,
     val intervaloDias: Int,
     val indiceCiclo: Int,
-    val qualidade: Int?,
+    val avaliacao: AvaliacaoRevisao?,
 )

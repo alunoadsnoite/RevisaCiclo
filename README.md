@@ -1,9 +1,11 @@
 # RevisaCiclo
 
 Aplicativo Android nativo de **revisão espaçada** para estudantes brasileiros.
-Esta primeira entrega contém apenas a **estrutura inicial** do projeto e a tela
-**Dashboard**, com dados de demonstração claramente identificados. O algoritmo
-completo de revisão espaçada ainda **não** foi implementado.
+
+O aplicativo já conta com o motor de revisão espaçada por ciclos, cadastro de
+disciplinas, cadastro de assuntos com data de estudo e a conclusão/avaliação das
+revisões pendentes. Não há dados de demonstração: o usuário começa com a base
+vazia e cria o próprio conteúdo.
 
 ## Stack
 
@@ -94,42 +96,68 @@ br.com.revisaciclo
 │   │   ├── dao
 │   │   ├── entity
 │   │   └── model            # projeções de consulta
-│   └── repository           # implementação do repositório + dados de demonstração
+│   └── repository           # implementação do repositório (OfflineRevisaoRepository)
 ├── domain
-│   ├── model                # modelos de domínio
-│   └── repository           # interface do repositório
+│   ├── model                # modelos e enums de domínio
+│   ├── repository           # interface do repositório
+│   └── scheduler            # MotorRevisaoEspacada (ciclos e intervalos)
 ├── ui
 │   ├── theme                # tema claro e escuro (Material 3)
-│   └── dashboard            # ViewModel + tela do Dashboard
-└── navigation               # Navigation Compose
+│   ├── common               # formatação de data, seleção de cor e data
+│   ├── dashboard            # ViewModel + tela do Dashboard
+│   ├── disciplinas          # CRUD de disciplinas
+│   ├── assuntos             # CRUD de assuntos por disciplina
+│   └── revisoes             # revisões pendentes e avaliação
+└── navigation               # Navigation Compose (barra inferior + rotas)
 ```
 
 ### Banco de dados (Room)
 
+Versão atual do schema: **2** (schema exportado em `app/schemas/`). A migração
+`1 → 2` converte as datas de milissegundos para *epoch day* e adiciona os campos
+de agendamento, sem apagar dados (`MIGRACAO_1_2` em `RevisaCicloDatabase`).
+
 - `disciplinas` — disciplinas de estudo.
-- `assuntos` — assuntos pertencentes a uma disciplina (chave estrangeira).
-- `revisoes` — histórico/agenda de revisões por assunto (chave estrangeira).
+- `assuntos` — assuntos de uma disciplina, com data de estudo, estado e próxima revisão.
+- `revisoes` — revisões agendadas/concluídas por assunto, com avaliação.
+
+## Motor de revisão espaçada
+
+O `MotorRevisaoEspacada` usa os intervalos `[1, 3, 7, 15, 30]` dias. A avaliação
+de uma revisão define o próximo ciclo:
+
+| Avaliação | Próximo ciclo |
+|---|---|
+| Esqueci | reinicia no ciclo 1 |
+| Difícil | repete o ciclo atual |
+| Bom | avança 1 ciclo |
+| Fácil | avança 2 ciclos |
+
+Após o último intervalo o assunto continua sendo revisado a cada 30 dias.
+A próxima data é calculada a partir da data de estudo (agendamento inicial) ou da
+data em que a revisão foi avaliada.
 
 ## Estado atual
 
-- Estrutura de projeto, tema claro/escuro e navegação básica.
-- Banco Room preparado para disciplinas, assuntos e histórico de revisões.
-- Tela **Dashboard** em português brasileiro com:
-  - progresso circular geral;
-  - contadores de disciplinas, assuntos e revisões pendentes;
-  - próxima revisão agendada;
-  - progresso por disciplina.
-- Dados de demonstração inseridos na primeira execução, sempre sinalizados na
-  interface com o aviso **"Dados de demonstração"**.
-- Testes unitários da lógica de progresso do Dashboard.
+- Estrutura de projeto, tema claro/escuro e navegação com barra inferior
+  (Início, Disciplinas e Revisões).
+- Banco Room com migração e motor de revisão espaçada (`domain/scheduler`).
+- Telas em português brasileiro:
+  - **Dashboard**: progresso geral, contadores, próxima revisão e progresso por
+    disciplina;
+  - **Disciplinas**: criar, editar e excluir;
+  - **Assuntos**: criar, editar e excluir, com data de estudo;
+  - **Revisões**: lista de revisões pendentes/atrasadas e avaliação (Esqueci,
+    Difícil, Bom, Fácil).
+- Sem dados de demonstração (base inicia vazia).
+- Testes unitários do Dashboard e do motor de revisão espaçada.
 
 ## Próximos passos recomendados
 
-1. Modelar e implementar o algoritmo de revisão espaçada (intervalos por ciclo).
-2. Criar telas de CRUD de disciplinas e assuntos.
-3. Registrar revisões (concluir/adiar) e recalcular a agenda.
-4. Notificações/lembretes locais (sem serviços pagos).
-5. Migrar a injeção de dependências manual para Hilt, se necessário.
+1. Notificações/lembretes locais (sem serviços pagos).
+2. Filtros e ordenação adicionais na lista de assuntos/revisões.
+3. Relatórios/histórico de revisões concluídas.
+4. Migrar a injeção de dependências manual para Hilt, se necessário.
 
 ## Licença
 

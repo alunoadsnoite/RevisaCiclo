@@ -1,9 +1,14 @@
 package br.com.revisaciclo.domain.model
 
+import java.time.LocalDate
+
 data class Assunto(
     val id: Long,
     val disciplinaId: Long,
-    val nome: String,
-    val dificuldade: Int,
-    val criadoEm: Long,
+    val titulo: String,
+    val descricao: String?,
+    val dataEstudo: LocalDate,
+    val estadoRevisao: EstadoRevisao,
+    val indiceCiclo: Int,
+    val proximaRevisao: LocalDate?,
 )

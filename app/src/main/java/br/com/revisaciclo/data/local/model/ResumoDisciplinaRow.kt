@@ -4,6 +4,6 @@ data class ResumoDisciplinaRow(
     val disciplinaId: Long,
     val nome: String,
     val cor: Long,
-    val totalRevisoes: Int,
-    val concluidas: Int,
+    val totalAssuntos: Int,
+    val assuntosAtrasados: Int,
 )

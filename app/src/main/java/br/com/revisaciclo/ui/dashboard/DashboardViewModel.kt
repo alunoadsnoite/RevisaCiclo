@@ -14,11 +14,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 data class DashboardUiState(
     val carregando: Boolean = true,
-    val usaDadosDeDemonstracao: Boolean = true,
     val totalDisciplinas: Int = 0,
     val totalAssuntos: Int = 0,
     val totalRevisoes: Int = 0,
@@ -59,12 +57,6 @@ class DashboardViewModel(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = DashboardUiState(),
     )
-
-    init {
-        viewModelScope.launch {
-            repository.garantirDadosDeDemonstracao()
-        }
-    }
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
