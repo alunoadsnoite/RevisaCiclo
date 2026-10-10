@@ -186,7 +186,8 @@ Em **Configurações → Backup e dados**:
 
 Detalhes do formato em [docs/BACKUP_FORMAT.md](docs/BACKUP_FORMAT.md) e do
 protocolo em [docs/RESTORE_SAFETY.md](docs/RESTORE_SAFETY.md). Informações para
-distribuição livre em [docs/FDROID_READINESS.md](docs/FDROID_READINESS.md).
+distribuição livre em [docs/FDROID_READINESS.md](docs/FDROID_READINESS.md) e o
+rascunho de publicação em [docs/FDROID_SUBMISSION.md](docs/FDROID_SUBMISSION.md).
 
 ## Estado atual
 
