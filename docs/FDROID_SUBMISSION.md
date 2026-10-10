@@ -7,27 +7,25 @@ metadados de build de cada aplicativo.
 
 ## Pré-requisitos (bloqueadores atuais)
 
-- [ ] **Repositório Git público** (GitHub/GitLab/Git). O projeto **não tem remoto
-      configurado** (`git remote -v` vazio). O F-Droid compila a partir da URL
-      pública, então isto é obrigatório.
-- [ ] **Tag/release versionada** apontando para o commit a publicar.
-- [ ] `versionCode`/`versionName` coerentes com a tag (`1` / `0.1.0` hoje).
-- [ ] Licença GPL-3.0-or-later já presente (`LICENSE`).
+- [x] **Repositório Git público:** <https://github.com/alunoadsnoite/RevisaCiclo>.
+- [x] **Tag/release versionada:** `v0.1.0`.
+- [x] `versionCode`/`versionName` coerentes com a tag (`1` / `0.1.0`).
+- [x] Licença GPL-3.0-or-later já presente (`LICENSE`).
 
 ## Metadados (rascunho) — `metadata/br.com.revisaciclo.yml`
 
-Este arquivo vai no repositório `fdroiddata` (não no nosso). Ajustar `<usuario>`,
+Este arquivo vai no repositório `fdroiddata` (não no nosso). Confirmar
 `AuthorName` e a tag `commit:`.
 
 ```yaml
 Categories:
   - Science & Education
 License: GPL-3.0-or-later
-AuthorName: <seu nome ou projeto>
-WebSite: https://github.com/<usuario>/RevisaCiclo
-SourceCode: https://github.com/<usuario>/RevisaCiclo
-IssueTracker: https://github.com/<usuario>/RevisaCiclo/issues
-Changelog: https://github.com/<usuario>/RevisaCiclo/releases
+AuthorName: Valdenor
+WebSite: https://github.com/alunoadsnoite/RevisaCiclo
+SourceCode: https://github.com/alunoadsnoite/RevisaCiclo
+IssueTracker: https://github.com/alunoadsnoite/RevisaCiclo/issues
+Changelog: https://github.com/alunoadsnoite/RevisaCiclo/releases
 
 AutoName: RevisaCiclo
 Summary: Revisão espaçada circular, offline
@@ -40,7 +38,7 @@ Description: |
   exportar um backup completo (.revisaciclo), exportar JSON e restaurar com
   segurança. Sem anúncios, sem telemetria e sem contas.
 RepoType: git
-Repo: https://github.com/<usuario>/RevisaCiclo.git
+Repo: https://github.com/alunoadsnoite/RevisaCiclo.git
 
 Builds:
   - versionName: 0.1.0
@@ -81,9 +79,9 @@ Observações:
 
 ## Checklist antes do MR
 
-- [ ] Publicar o repositório no GitHub/GitLab.
-- [ ] Criar a tag `v0.1.0` no commit a ser publicado.
-- [ ] Confirmar `./gradlew assembleRelease` local gera APK.
+- [x] Publicar o repositório no GitHub/GitLab.
+- [x] Criar a tag `v0.1.0` no commit a ser publicado.
+- [x] Confirmar `./gradlew assembleRelease` local gera APK.
 - [ ] Testar em dispositivo real (instrumentados) — hoje pendente por falta de
       hardware.
 - [ ] Fork de `fdroiddata`, adicionar `metadata/br.com.revisaciclo.yml`, rodar
