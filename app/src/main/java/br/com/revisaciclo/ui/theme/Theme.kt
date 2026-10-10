@@ -6,6 +6,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import br.com.revisaciclo.domain.model.TemaApp
 
 private val EsquemaClaro = lightColorScheme(
     primary = VerdePrimario,
@@ -43,11 +44,16 @@ private val EsquemaEscuro = darkColorScheme(
 
 @Composable
 fun RevisaCicloTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    tema: TemaApp = TemaApp.AUTOMATICO,
     content: @Composable () -> Unit,
 ) {
+    val escuro = when (tema) {
+        TemaApp.CLARO -> false
+        TemaApp.ESCURO -> true
+        TemaApp.AUTOMATICO -> isSystemInDarkTheme()
+    }
     MaterialTheme(
-        colorScheme = if (darkTheme) EsquemaEscuro else EsquemaClaro,
+        colorScheme = if (escuro) EsquemaEscuro else EsquemaClaro,
         typography = Tipografia,
         content = content,
     )

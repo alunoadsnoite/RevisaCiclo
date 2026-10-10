@@ -15,8 +15,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -35,9 +39,11 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.revisaciclo.domain.model.ProgressoDisciplina
+import br.com.revisaciclo.domain.model.ProgressoMeta
 import br.com.revisaciclo.domain.model.Revisao
 import br.com.revisaciclo.domain.model.StatusRevisao
 import br.com.revisaciclo.ui.common.formatarData
@@ -45,18 +51,36 @@ import kotlin.math.roundToInt
 
 @Composable
 fun DashboardScreen(
+    onAbrirConfiguracoes: () -> Unit,
     viewModel: DashboardViewModel = viewModel(factory = DashboardViewModel.Factory),
 ) {
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
-    DashboardContent(estado = estado)
+    LifecycleResumeEffect(Unit) {
+        viewModel.atualizarData()
+        onPauseOrDispose { }
+    }
+    DashboardContent(estado = estado, onAbrirConfiguracoes = onAbrirConfiguracoes)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DashboardContent(estado: DashboardUiState) {
+private fun DashboardContent(
+    estado: DashboardUiState,
+    onAbrirConfiguracoes: () -> Unit,
+) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(text = "Dashboard") })
+            TopAppBar(
+                title = { Text(text = "Dashboard") },
+                actions = {
+                    IconButton(onClick = onAbrirConfiguracoes) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Configurações",
+                        )
+                    }
+                },
+            )
         },
     ) { padding ->
         Column(
@@ -68,6 +92,8 @@ private fun DashboardContent(estado: DashboardUiState) {
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             CartaoProgressoGeral(estado)
+
+            CartaoMetaDiaria(estado.progressoMeta)
 
             LinhaIndicadores(estado)
 
@@ -217,6 +243,43 @@ private fun Indicador(
             Text(
                 text = titulo,
                 style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+private fun CartaoMetaDiaria(progresso: ProgressoMeta) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        ) {
+            Text(
+                text = "Meta diária",
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "${progresso.concluidasHoje} de ${progresso.metaDiaria} revisões hoje",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            LinearProgressIndicator(
+                progress = { progresso.percentual },
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = if (progresso.atingida) {
+                    "Meta atingida. Bom trabalho!"
+                } else {
+                    "Faltam ${progresso.restantes} revisão(ões) para a meta."
+                },
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }

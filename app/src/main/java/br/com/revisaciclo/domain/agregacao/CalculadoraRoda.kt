@@ -17,12 +17,12 @@ object CalculadoraRoda {
         assuntos: List<Assunto>,
         disciplinas: Map<Long, Disciplina>,
         hoje: LocalDate,
-        intervalos: List<Int> = MotorRevisaoEspacada.INTERVALOS_DIAS,
+        intervalos: List<Int> = MotorRevisaoEspacada.INTERVALOS_PADRAO,
     ): RodaRevisao {
         val porEstagio = intervalos.associateWith { mutableListOf<AssuntoRoda>() }
 
         assuntos.forEach { assunto ->
-            val intervalo = MotorRevisaoEspacada.intervaloDias(assunto.indiceCiclo)
+            val intervalo = MotorRevisaoEspacada.intervaloDias(assunto.indiceCiclo, intervalos)
             porEstagio[intervalo]?.add(
                 AssuntoRoda(
                     id = assunto.id,

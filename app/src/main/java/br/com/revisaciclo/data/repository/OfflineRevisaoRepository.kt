@@ -14,16 +14,19 @@ import br.com.revisaciclo.domain.model.ProgressoDisciplina
 import br.com.revisaciclo.domain.model.Revisao
 import br.com.revisaciclo.domain.model.RevisaoPendente
 import br.com.revisaciclo.domain.model.StatusRevisao
+import br.com.revisaciclo.domain.repository.PreferenciasRepository
 import br.com.revisaciclo.domain.repository.RevisaoRepository
 import br.com.revisaciclo.domain.scheduler.MotorRevisaoEspacada
 import java.time.Clock
 import java.time.Instant
 import java.time.LocalDate
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class OfflineRevisaoRepository(
     private val database: RevisaCicloDatabase,
+    private val preferenciasRepository: PreferenciasRepository,
     private val clock: Clock = Clock.systemDefaultZone(),
 ) : RevisaoRepository {
 
@@ -32,6 +35,9 @@ class OfflineRevisaoRepository(
     private val revisaoDao = database.revisaoDao()
 
     private fun hoje(): LocalDate = LocalDate.now(clock)
+
+    private suspend fun intervalos(): List<Int> =
+        preferenciasRepository.preferencias.first().intervalosDias
 
     private fun definirEstado(proximaRevisao: LocalDate): EstadoRevisao =
         if (proximaRevisao.isBefore(hoje())) EstadoRevisao.ATRASADO else EstadoRevisao.EM_DIA
@@ -88,6 +94,9 @@ class OfflineRevisaoRepository(
             }
         }
 
+    override suspend fun contarRevisoesDevidas(hoje: LocalDate): Int =
+        revisaoDao.contarDevidas(hoje.toEpochDay())
+
     override suspend fun criarDisciplina(nome: String, cor: Long): Long =
         disciplinaDao.inserir(
             DisciplinaEntity(
@@ -109,7 +118,7 @@ class OfflineRevisaoRepository(
         descricao: String?,
         dataEstudo: LocalDate,
     ): Long = database.withTransaction {
-        val agendamento = MotorRevisaoEspacada.agendamentoInicial(dataEstudo)
+        val agendamento = MotorRevisaoEspacada.agendamentoInicial(dataEstudo, intervalos())
         val assuntoId = assuntoDao.inserir(
             AssuntoEntity(
                 disciplinaId = disciplinaId,
@@ -150,7 +159,7 @@ class OfflineRevisaoRepository(
 
         val pendente = revisaoDao.buscarPendentePorAssunto(id)
         val ciclo = pendente?.indiceCiclo ?: 1
-        val intervalo = pendente?.intervaloDias ?: MotorRevisaoEspacada.intervaloDias(ciclo)
+        val intervalo = pendente?.intervaloDias ?: MotorRevisaoEspacada.intervaloDias(ciclo, intervalos())
         val proximaRevisao = dataEstudo.plusDays(intervalo.toLong())
 
         if (pendente != null) {
@@ -194,6 +203,7 @@ class OfflineRevisaoRepository(
                 dataReferencia = data,
                 cicloAtual = revisao.indiceCiclo,
                 avaliacao = avaliacao,
+                intervalos = intervalos(),
             )
 
             revisaoDao.inserir(

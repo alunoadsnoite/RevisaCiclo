@@ -13,6 +13,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -23,6 +24,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import br.com.revisaciclo.ui.assuntos.AssuntosScreen
+import br.com.revisaciclo.ui.configuracoes.ConfiguracoesScreen
 import br.com.revisaciclo.ui.dashboard.DashboardScreen
 import br.com.revisaciclo.ui.disciplinas.DisciplinasScreen
 import br.com.revisaciclo.ui.estatisticas.EstatisticasScreen
@@ -37,6 +39,7 @@ object Destinos {
     const val REVISOES = "revisoes"
     const val ESTATISTICAS = "estatisticas"
     const val SESSAO = "sessao"
+    const val CONFIGURACOES = "configuracoes"
     const val ASSUNTOS = "assuntos/{disciplinaId}"
     const val ARG_DISCIPLINA_ID = "disciplinaId"
 
@@ -51,7 +54,16 @@ private data class Aba(
 @Composable
 fun RevisaCicloNavHost(
     navController: NavHostController = rememberNavController(),
+    destinoInicial: String? = null,
+    onDestinoConsumido: () -> Unit = {},
 ) {
+    LaunchedEffect(destinoInicial) {
+        if (destinoInicial != null) {
+            navController.navigate(destinoInicial) { launchSingleTop = true }
+            onDestinoConsumido()
+        }
+    }
+
     val backStackEntry by navController.currentBackStackEntryAsState()
     val rotaAtual = backStackEntry?.destination?.route
     val abas = listOf(
@@ -93,7 +105,9 @@ fun RevisaCicloNavHost(
             modifier = Modifier.padding(padding),
         ) {
             composable(Destinos.DASHBOARD) {
-                DashboardScreen()
+                DashboardScreen(
+                    onAbrirConfiguracoes = { navController.navigate(Destinos.CONFIGURACOES) },
+                )
             }
             composable(Destinos.RODA) {
                 RodaRevisaoScreen(
@@ -118,6 +132,11 @@ fun RevisaCicloNavHost(
             composable(Destinos.SESSAO) {
                 SessaoRevisaoScreen(
                     onSair = { navController.popBackStack() },
+                )
+            }
+            composable(Destinos.CONFIGURACOES) {
+                ConfiguracoesScreen(
+                    onVoltar = { navController.popBackStack() },
                 )
             }
             composable(
