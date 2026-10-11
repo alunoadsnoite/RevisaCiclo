@@ -1,0 +1,1 @@
+Screenshots and descriptions for F-Droid. Improved backup security and Android test stability.

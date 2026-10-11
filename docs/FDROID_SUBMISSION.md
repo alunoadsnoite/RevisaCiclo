@@ -5,10 +5,34 @@ ao repositório [`fdroiddata`](https://gitlab.com/fdroid/fdroiddata), que conté
 metadados de build de cada aplicativo.
 
 - **Merge request:** <https://gitlab.com/fdroid/fdroiddata/-/merge_requests/51985>
-- **Estado:** aberto, *mergeable*; pipeline de CI **100% verde** (incluindo
-  `fdroid lint` e `fdroid build` no buildserver do F-Droid).
+- **Estado verificado em 11/10/2026:** fechado **sem merge** (`state: closed`,
+  `merged_at: null`), atualizado às 04:47 no horário de Recife. O último pipeline
+  está aprovado (`success`), mas isso não significa publicação no catálogo.
+- **Publicação:** a página <https://f-droid.org/packages/br.com.revisaciclo/>
+  e os metadados `metadata/br.com.revisaciclo.yml` na branch `master` do
+  `fdroiddata` retornaram HTTP 404 nesta consulta.
+- **Outras submissões:** a busca pública por RevisaCiclo também encontrou o MR
+  [51984](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/51984), igualmente
+  fechado sem merge. Não foi encontrada submissão aberta nessa busca.
+- **Motivo do fechamento:** ainda não confirmado; a API de comentários retornou
+  HTTP 401. É necessário ler a discussão no GitLab antes de decidir sobre uma
+  reabertura ou nova submissão.
 
 ## Pré-requisitos
+
+### Capturas de tela
+
+Quatro capturas reais em português brasileiro estão disponíveis em
+`fastlane/metadata/android/pt-BR/images/phoneScreenshots/`, na ordem:
+`1.jpeg` (Início), `2.jpeg` (Disciplinas), `3.jpeg` (Revisões) e
+`4.jpeg` (Estatísticas). Os arquivos originais enviados foram preservados,
+sem edição. Ainda falta uma captura da roda de estágios.
+
+As capturas e descrições em `pt-BR` e `en-US` integram a versão `0.1.1`
+(`versionCode: 2`). O F-Droid precisará utilizar a tag `v0.1.1` para importar
+esses arquivos; a submissão original de `0.1.0` permanece fechada.
+
+### Código e versão da submissão original
 
 - [x] **Repositório Git público:** <https://github.com/alunoadsnoite/RevisaCiclo>.
 - [x] **Tag/release versionada:** `v0.1.0`.
@@ -19,6 +43,9 @@ metadados de build de cada aplicativo.
 
 Este arquivo vive no repositório `fdroiddata` (não no nosso). O `Summary` fica em
 arquivo separado, para permitir tradução (exigência atual do CI do `fdroiddata`).
+O exemplo abaixo registra a submissão original de `0.1.0`; para uma nova
+submissão da versão com capturas, usar `versionName: 0.1.1`, `versionCode: 2`,
+`commit: v0.1.1`, `CurrentVersion: 0.1.1` e `CurrentVersionCode: 2`.
 
 ```yaml
 Categories:
@@ -102,7 +129,9 @@ Observações:
       `en-US/summary.txt`, e abrir o merge request.
 - [x] CI do F-Droid (`fdroid lint`, `fdroid rewritemeta`, `fdroid build` etc.)
       aprovado.
-- [ ] Aguardar o *review*/merge por um mantenedor do `fdroiddata`.
+- [ ] Esclarecer o fechamento do MR 51985 e resolver eventuais solicitações dos
+      mantenedores antes de retomar a submissão.
+- [ ] Confirmar merge e posterior publicação no catálogo oficial.
 
 ## O que **não** fazer (regras da fase)
 

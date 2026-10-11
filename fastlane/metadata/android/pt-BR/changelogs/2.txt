@@ -1,0 +1,1 @@
+Capturas de tela e descrições para o F-Droid. Melhorias na segurança de backup e na estabilidade dos testes Android.
