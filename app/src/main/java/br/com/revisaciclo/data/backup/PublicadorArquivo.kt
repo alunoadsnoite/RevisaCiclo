@@ -20,6 +20,7 @@ class PublicadorArquivo(private val appContext: Context) {
     suspend fun publicar(nomeArquivo: String, conteudo: ByteArray): String =
         withContext(Dispatchers.IO) {
             val diretorio = File(appContext.cacheDir, DIRETORIO).apply { mkdirs() }
+            removerAntigos(diretorio)
             val arquivo = File(diretorio, nomeArquivo.sanitizar())
             arquivo.writeBytes(conteudo)
             FileProvider.getUriForFile(
@@ -29,9 +30,20 @@ class PublicadorArquivo(private val appContext: Context) {
             ).toString()
         }
 
-    /** Remove arquivos compartilhados anteriormente para liberar espaço. */
+    /**
+     * Remove arquivos compartilhados anteriormente para liberar espaço. Seguro
+     * para chamar na inicialização do processo, quando não há compartilhamento
+     * em andamento.
+     */
     suspend fun limpar() = withContext(Dispatchers.IO) {
         File(appContext.cacheDir, DIRETORIO).listFiles()?.forEach { it.delete() }
+    }
+
+    private fun removerAntigos(diretorio: File) {
+        val limite = System.currentTimeMillis() - VALIDADE_ARQUIVOS_MS
+        diretorio.listFiles()?.forEach { arquivo ->
+            if (arquivo.lastModified() < limite) arquivo.delete()
+        }
     }
 
     private fun String.sanitizar(): String =
@@ -39,5 +51,6 @@ class PublicadorArquivo(private val appContext: Context) {
 
     private companion object {
         const val DIRETORIO = "shared"
+        const val VALIDADE_ARQUIVOS_MS = 24L * 60L * 60L * 1000L
     }
 }

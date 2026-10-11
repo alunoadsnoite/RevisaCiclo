@@ -9,6 +9,7 @@ import br.com.revisaciclo.RevisaCicloApp
 import br.com.revisaciclo.domain.model.Assunto
 import br.com.revisaciclo.domain.model.Disciplina
 import br.com.revisaciclo.domain.repository.RevisaoRepository
+import java.time.Clock
 import java.time.LocalDate
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +26,11 @@ data class AssuntosUiState(
 class AssuntosViewModel(
     private val repository: RevisaoRepository,
     private val disciplinaId: Long,
+    private val clock: Clock,
 ) : ViewModel() {
+
+    val hoje: LocalDate
+        get() = LocalDate.now(clock)
 
     val uiState: StateFlow<AssuntosUiState> = combine(
         repository.observarDisciplina(disciplinaId),
@@ -59,7 +64,7 @@ class AssuntosViewModel(
         fun factory(disciplinaId: Long): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val app = this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as RevisaCicloApp
-                AssuntosViewModel(app.container.revisaoRepository, disciplinaId)
+                AssuntosViewModel(app.container.revisaoRepository, disciplinaId, app.container.clock)
             }
         }
     }

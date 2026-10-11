@@ -65,6 +65,7 @@ import br.com.revisaciclo.domain.model.Preferencias
 import br.com.revisaciclo.domain.model.TemaApp
 import br.com.revisaciclo.domain.preferencias.ResultadoIntervalos
 import br.com.revisaciclo.domain.preferencias.ValidadorIntervalos
+import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
@@ -220,11 +221,11 @@ fun ConfiguracoesScreen(
         DialogoExportar(
             onBackup = {
                 dialogoExportar = false
-                lancadorSalvarBackup.launch(nomeArquivoBackup())
+                lancadorSalvarBackup.launch(nomeArquivoBackup(backupViewModel.hoje))
             },
             onJson = {
                 dialogoExportar = false
-                lancadorSalvarJson.launch(nomeArquivoJson())
+                lancadorSalvarJson.launch(nomeArquivoJson(backupViewModel.hoje))
             },
             onDispensar = { dialogoExportar = false },
         )
@@ -258,13 +259,11 @@ fun ConfiguracoesScreen(
     }
 }
 
-private fun nomeArquivoBackup(): String {
-    val hoje = java.time.LocalDate.now()
+private fun nomeArquivoBackup(hoje: LocalDate): String {
     return BackupFormato.nomeSugerido(hoje.year, hoje.monthValue, hoje.dayOfMonth)
 }
 
-private fun nomeArquivoJson(): String {
-    val hoje = java.time.LocalDate.now()
+private fun nomeArquivoJson(hoje: LocalDate): String {
     return "revisaciclo-export-%04d%02d%02d.json".format(
         hoje.year,
         hoje.monthValue,

@@ -25,6 +25,23 @@ O aplicativo **não** declara `INTERNET`, nem permissões amplas de armazenament
 restauração usam o Storage Access Framework (SAF), em que o próprio usuário escolhe
 o arquivo, sem conceder acesso ao restante do armazenamento.
 
+### Permissões adicionadas na mesclagem do manifesto
+
+A biblioteca AndroidX WorkManager (usada apenas para reagendar lembretes locais)
+adiciona permissões ao manifesto final do APK. Elas não são declaradas no código do
+aplicativo e não ampliam o acesso a dados do usuário:
+
+| Permissão | Origem | Motivo |
+|---|---|---|
+| `WAKE_LOCK` | WorkManager | manter a CPU ativa o suficiente para executar o trabalho periódico de reagendamento. |
+| `ACCESS_NETWORK_STATE` | WorkManager | apenas observar o estado de conectividade para avaliar restrições de trabalho. O aplicativo não faz nenhuma chamada de rede. |
+| `FOREGROUND_SERVICE` | WorkManager | executar trabalhos de longa duração como serviço em primeiro plano, quando aplicável. |
+| `br.com.revisaciclo.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` | AndroidX Core | permissão de assinatura **interna do próprio app**, usada para registrar receptores dinâmicos não exportados. Não é concedida a terceiros. |
+
+O aplicativo desativa o backup automático do sistema (`android:allowBackup="false"`)
+e restringe a transferência entre dispositivos via `android:dataExtractionRules`
+(ver [RESTORE_SAFETY.md](RESTORE_SAFETY.md)).
+
 Para **compartilhar** um backup gerado, o aplicativo copia o arquivo para a própria
 área de cache (`cacheDir/shared`) e o expõe via `FileProvider`
 (`${applicationId}.fileprovider`, `exported=false`, `grantUriPermissions=true`),

@@ -14,6 +14,8 @@ import br.com.revisaciclo.domain.backup.ResultadoLeituraBackup
 import br.com.revisaciclo.domain.backup.ResultadoRestauracao
 import br.com.revisaciclo.domain.backup.ServicoBackup
 import br.com.revisaciclo.domain.backup.ServicoRestauracao
+import java.time.Clock
+import java.time.LocalDate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -41,7 +43,11 @@ class BackupViewModel(
     private val servicoBackup: ServicoBackup,
     private val servicoRestauracao: ServicoRestauracao,
     private val publicadorArquivo: PublicadorArquivo,
+    private val clock: Clock,
 ) : ViewModel() {
+
+    val hoje: LocalDate
+        get() = LocalDate.now(clock)
 
     private val _uiState = MutableStateFlow(BackupUiState())
     val uiState: StateFlow<BackupUiState> = _uiState.asStateFlow()
@@ -82,8 +88,8 @@ class BackupViewModel(
         viewModelScope.launch {
             try {
                 val bytes = servicoBackup.criarBackupBytes()
-                val hoje = java.time.LocalDate.now()
-                val nome = BackupFormato.nomeSugerido(hoje.year, hoje.monthValue, hoje.dayOfMonth)
+                val data = hoje
+                val nome = BackupFormato.nomeSugerido(data.year, data.monthValue, data.dayOfMonth)
                 val uri = publicadorArquivo.publicar(nome, bytes)
                 _uiState.update { it.copy(exportando = false, compartilhar = uri) }
             } catch (e: Exception) {
@@ -153,6 +159,7 @@ class BackupViewModel(
                     servicoBackup = app.container.servicoBackup,
                     servicoRestauracao = app.container.servicoRestauracao,
                     publicadorArquivo = app.container.publicadorArquivo,
+                    clock = app.container.clock,
                 )
             }
         }

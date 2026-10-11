@@ -59,6 +59,25 @@ restauração, mantido em `backup_seguranca/` (armazenamento privado do app).
 > O snapshot **não** substitui um backup exportado: mantenha sempre um arquivo
 > `.revisaciclo` guardado fora do aplicativo.
 
+## Backup automático do sistema (`allowBackup`)
+
+O aplicativo desativa o backup automático do Android (`android:allowBackup="false"`)
+e restringe a transferência entre dispositivos com `android:dataExtractionRules`
+(Android 12+) e `android:fullBackupContent` (Android 11 e anteriores), excluindo
+todos os domínios.
+
+Motivo: Room (banco) e DataStore (preferências) **não são restaurados de forma
+atômica** pelo sistema. O backup automático pode repor um dos dois lados sem o
+outro — ou repor ambos sem executar a reconciliação descrita acima — deixando o
+aplicativo em um estado inconsistente que o usuário não conseguiria diagnosticar.
+Além disso, os dados de estudo não são enviados a nuvem alguma sem uma ação
+explícita.
+
+A forma suportada de backup é o próprio recurso do aplicativo: o usuário gera um
+arquivo `.revisaciclo` e o guarda onde quiser (ver `BACKUP_FORMAT.md`). Assim a
+restauração é validada por checksum e sempre passa pelo fluxo transacional seguro
+descrito neste documento.
+
 ## O que a restauração não faz
 
 - Não mescla dados; não há deduplicação.

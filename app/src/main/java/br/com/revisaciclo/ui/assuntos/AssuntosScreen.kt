@@ -131,6 +131,7 @@ fun AssuntosScreen(
     if (exibindoDialogo) {
         DialogoAssunto(
             assunto = editando,
+            dataInicial = viewModel.hoje,
             onDispensar = { exibindoDialogo = false },
             onSalvar = { titulo, descricao, dataEstudo ->
                 viewModel.salvar(editando?.id, titulo, descricao, dataEstudo)
@@ -258,12 +259,13 @@ private fun EtiquetaEstado(estado: EstadoRevisao) {
 @Composable
 private fun DialogoAssunto(
     assunto: Assunto?,
+    dataInicial: LocalDate,
     onDispensar: () -> Unit,
     onSalvar: (String, String?, LocalDate) -> Unit,
 ) {
     var titulo by remember { mutableStateOf(assunto?.titulo.orEmpty()) }
     var descricao by remember { mutableStateOf(assunto?.descricao.orEmpty()) }
-    var dataEstudo by remember { mutableStateOf(assunto?.dataEstudo ?: LocalDate.now()) }
+    var dataEstudo by remember { mutableStateOf(assunto?.dataEstudo ?: dataInicial) }
     var selecionandoData by remember { mutableStateOf(false) }
 
     AlertDialog(

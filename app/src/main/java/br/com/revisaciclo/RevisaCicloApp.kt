@@ -23,6 +23,7 @@ class RevisaCicloApp : Application() {
             container.reconciliadorRestauracao.reconciliar()
             val preferencias = container.preferenciasRepository.preferencias.first()
             container.agendadorNotificacoes.garantirAgendado(preferencias)
+            container.publicadorArquivo.limpar()
         }
     }
 }
