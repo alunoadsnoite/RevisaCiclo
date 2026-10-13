@@ -1,0 +1,1 @@
+Otimização da versão release com R8 e remoção de recursos não utilizados para reduzir o tamanho do aplicativo.

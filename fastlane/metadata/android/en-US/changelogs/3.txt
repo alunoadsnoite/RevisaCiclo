@@ -1,0 +1,1 @@
+Optimize release builds with R8 and remove unused resources to reduce app size.

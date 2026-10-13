@@ -82,7 +82,8 @@ Comando de build (a partir do código-fonte):
 
 ## Versionamento
 
-- `versionCode` e `versionName` em `app/build.gradle.kts` (atual: `1` / `0.1.0`).
+- `versionCode` e `versionName` em `app/build.gradle.kts` (atual: `3` / `0.1.2`).
+- Releases usam R8 para otimizar e reduzir o código e remover recursos não utilizados.
 - A cada release, incremente ambos e crie a tag correspondente no repositório.
 
 ## Metadados sugeridos para o F-Droid
