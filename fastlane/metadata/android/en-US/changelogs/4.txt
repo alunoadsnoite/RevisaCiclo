@@ -1,0 +1,1 @@
+F-Droid preparation: stage wheel screenshot, artwork authorship and license documentation, and SHA-256 verification of the Gradle distribution. Retains the R8 optimizations from version 0.1.2.

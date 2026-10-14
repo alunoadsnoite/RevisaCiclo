@@ -227,3 +227,6 @@ rascunho de publicação em [docs/FDROID_SUBMISSION.md](docs/FDROID_SUBMISSION.m
 
 Distribuído sob a **GNU General Public License v3.0 ou posterior**
 (GPL-3.0-or-later). Consulte o arquivo [LICENSE](LICENSE).
+
+A autoria, a origem e as licenças dos ícones, gráficos e capturas estão em
+[Recursos gráficos](docs/GRAPHICS_LICENSES.md).

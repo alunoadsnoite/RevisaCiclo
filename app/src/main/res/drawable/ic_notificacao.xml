@@ -1,3 +1,10 @@
+<!--
+    Material Design notifications icon — Google / Material Design contributors.
+    SPDX-License-Identifier: Apache-2.0
+    Adaptado para VectorDrawable com tint branco.
+    Origem: https://github.com/google/material-design-icons
+    Licença: LICENSES/Apache-2.0.txt (raiz do repositório)
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"

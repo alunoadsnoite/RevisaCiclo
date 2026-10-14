@@ -1,0 +1,1 @@
+Preparação para o F-Droid: captura da roda de estágios, documentação de autoria e licenças dos recursos gráficos e verificação SHA-256 da distribuição Gradle. Mantidas as otimizações R8 da versão 0.1.2.

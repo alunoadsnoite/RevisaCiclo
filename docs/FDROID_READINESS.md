@@ -69,7 +69,7 @@ jogos, sem rastreamento de usuários, sem exigência de conta.
 
 ## Build
 
-- Compilação reprodutível via Gradle Wrapper versionado (`gradlew`, Gradle 9.5.0).
+- Compilação via Gradle Wrapper versionado (`gradlew`, Gradle 9.5.0).
 - JDK 21, Android SDK compileSdk/targetSdk 37, minSdk 26.
 - Sem `google-services.json`, sem chaves de API embutidas.
 - Assinatura de release **não** é versionada; o F-Droid assina com a própria chave.
@@ -82,7 +82,7 @@ Comando de build (a partir do código-fonte):
 
 ## Versionamento
 
-- `versionCode` e `versionName` em `app/build.gradle.kts` (atual: `3` / `0.1.2`).
+- `versionCode` e `versionName` em `app/build.gradle.kts` (atual: `4` / `0.1.3`).
 - Releases usam R8 para otimizar e reduzir o código e remover recursos não utilizados.
 - A cada release, incremente ambos e crie a tag correspondente no repositório.
 
@@ -103,3 +103,12 @@ Comando de build (a partir do código-fonte):
 - [ ] Nenhuma permissão nova sem justificativa.
 - [ ] Revisão de dependências (sem novas bibliotecas proprietárias).
 - [ ] Textos de loja e capturas de tela em português brasileiro.
+
+## Recursos gráficos e integridade do Gradle
+
+- Autoria e licenças: [GRAPHICS_LICENSES.md](GRAPHICS_LICENSES.md).
+- Captura da roda: `fastlane/metadata/android/pt-BR/images/phoneScreenshots/5.png`.
+- O Wrapper verifica a distribuição Gradle 9.5.0 com `distributionSha256Sum`,
+  obtido de https://services.gradle.org/distributions/gradle-9.5.0-bin.zip.sha256.
+  Essa verificação garante a integridade do ZIP baixado; não comprova
+  reprodutibilidade do APK.
