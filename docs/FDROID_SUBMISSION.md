@@ -36,7 +36,46 @@ Autoria e licenças dos gráficos: [GRAPHICS_LICENSES.md](GRAPHICS_LICENSES.md).
 A nova captura foi conferida em emulador com dados fictícios. Isso não substitui
 os testes instrumentados completos ou a validação em aparelho físico.
 
-A versão 0.1.2 passou na validação local de 147 testes unitários, lintRelease e
-assembleRelease. A versão 0.1.3 e a receita atualizada exigem nova validação.
+A versão 0.1.3 passou na validação local de 147 testes unitários, lintRelease e
+assembleRelease. A receita também passou em `fdroid lint` e `fdroid rewritemeta`.
 CI aprovado não significa merge nem disponibilidade no catálogo. Confirmar
 merge e depois publicação em https://f-droid.org/packages/br.com.revisaciclo/.
+
+## Publicação desta atualização
+
+- Release upstream: https://github.com/alunoadsnoite/RevisaCiclo/releases/tag/v0.1.3.
+- Commit upstream: `5628156697a00f56af0d643fbf079475da67bd4b`.
+- Receita publicada no fork: `9ed0b7ae6229c32387d7a4e78d3daa2ea850fb5f`.
+- O MR existente foi atualizado para 0.1.3, preservando a discussão com os mantenedores.
+- Pipeline iniciado: https://gitlab.com/alunoadsnoite/fdroiddata/-/pipelines/2947409092.
+  O resultado ainda precisa ser confirmado; esse envio não implica publicação no catálogo.
+
+## Receita publicada
+
+```yaml
+Categories:
+  - Science & Education
+License: GPL-3.0-or-later
+AuthorName: Valdenor
+SourceCode: https://github.com/alunoadsnoite/RevisaCiclo
+IssueTracker: https://github.com/alunoadsnoite/RevisaCiclo/issues
+Changelog: https://github.com/alunoadsnoite/RevisaCiclo/releases
+
+AutoName: RevisaCiclo
+
+RepoType: git
+Repo: https://github.com/alunoadsnoite/RevisaCiclo.git
+
+Builds:
+  - versionName: 0.1.3
+    versionCode: 4
+    commit: 5628156697a00f56af0d643fbf079475da67bd4b
+    subdir: app
+    gradle:
+      - yes
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: 0.1.3
+CurrentVersionCode: 4
+```
