@@ -47,8 +47,9 @@ merge e depois publicação em https://f-droid.org/packages/br.com.revisaciclo/.
 - Commit upstream: `5628156697a00f56af0d643fbf079475da67bd4b`.
 - Receita publicada no fork: `9ed0b7ae6229c32387d7a4e78d3daa2ea850fb5f`.
 - O MR existente foi atualizado para 0.1.3, preservando a discussão com os mantenedores.
-- Pipeline iniciado: https://gitlab.com/alunoadsnoite/fdroiddata/-/pipelines/2947409092.
-  O resultado ainda precisa ser confirmado; esse envio não implica publicação no catálogo.
+- Pipeline aprovado: https://gitlab.com/alunoadsnoite/fdroiddata/-/pipelines/2947409092.
+  Todas as nove etapas passaram, incluindo build, scanner de código-fonte e checagem
+  do APK. A aprovação do CI não implica merge nem publicação no catálogo.
 
 ## Receita publicada
 
