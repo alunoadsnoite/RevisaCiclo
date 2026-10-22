@@ -56,7 +56,7 @@ fun RevisoesScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Revisões") },
+                title = { Text(text = getString(R.string.reviews)) },
                 actions = { SeletorProjetoAtivo(onGerenciarProjetos = onGerenciarProjetos) },
             )
         },
@@ -74,13 +74,13 @@ fun RevisoesScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        text = "Nenhuma revisão pendente. Tudo em dia!",
+                        text = getString(R.string.no_pending_reviews_all_set),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     FilledTonalButton(onClick = onIniciarSessao) {
-                        Text(text = "Iniciar sessão")
+                        Text(text = getString(R.string.start_session))
                     }
                 }
             } else {
@@ -100,7 +100,7 @@ fun RevisoesScreen(
                     if (estado.atrasadas > 0) {
                         item {
                             Text(
-                                text = "${estado.atrasadas} revisão(ões) atrasada(s)",
+                                text = "${estado.atrasadas} ${getString(R.string.overdue)} ${getString(R.string.reviews)}",
                                 style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.error,
                             )
@@ -154,7 +154,7 @@ private fun ItemRevisaoPendente(
                 )
                 if (pendente.atrasada) {
                     Text(
-                        text = "Atrasada",
+                        text = getString(R.string.overdue),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.error,
                         fontWeight = FontWeight.Bold,
@@ -177,7 +177,7 @@ private fun ItemRevisaoPendente(
                 onClick = onAvaliar,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(text = "Avaliar revisão")
+                Text(text = getString(R.string.rate_review))
             }
         }
     }
@@ -191,7 +191,7 @@ private fun DialogoAvaliacao(
 ) {
     AlertDialog(
         onDismissRequest = onDispensar,
-        title = { Text(text = "Como foi a revisão?") },
+        title = { Text(text = getString(R.string.how_was_the_review)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
@@ -202,7 +202,7 @@ private fun DialogoAvaliacao(
             }
         },
         confirmButton = {
-            TextButton(onClick = onDispensar) { Text(text = "Cancelar") }
+            TextButton(onClick = onDispensar) { Text(text = getString(R.string.cancel)) }
         },
     )
 }

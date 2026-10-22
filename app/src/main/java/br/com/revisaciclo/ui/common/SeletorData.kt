@@ -35,12 +35,12 @@ fun SeletorData(
                     onDispensar()
                 },
             ) {
-                Text(text = "OK")
+                Text(text = getString(R.string.ok))
             }
         },
         dismissButton = {
             TextButton(onClick = onDispensar) {
-                Text(text = "Cancelar")
+                Text(text = getString(R.string.cancel))
             }
         },
     ) {

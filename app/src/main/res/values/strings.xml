@@ -1,4 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">RevisaCiclo</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard">Dashboard</string>
+    <string name="settings">Settings</string>
+    <string name="progress_by_discipline">Progress by discipline</string>
+    <string name="tap_plus_to_add">Tap + to add.</string>
+    <string name="no_review_scheduled">No review scheduled.</string>
+    <string name="overdue_cycle">Overdue — cycle</string>
+    <string name="completed">completed</string>
+    <string name="disciplines">Disciplines</string>
+    <string name="subjects">Subjects</string>
+    <string name="pending">Pending</string>
+    <string name="daily_goal">Daily goal</string>
+    <string name="reviews_today">review(s) today</string>
+    <string name="daily_goal_met_good_work">Daily goal met. Good work!</string>
+    <string name="remaining">Remaining</string>
+    <string name="reviews_to_goal">review(s) to reach the goal.</string>
+    <string name="next_review">Next review</string>
+    <string name="review">review</string>
+    <string name="cycle">cycle</string>
+    <string name="interval_of">interval of</string>
+    <string name="days">days</string>
+    <string name="overdue">overdue</string>
+    <string name="change">Change</string>
+    <string name="theme">Theme</string>
+    <string name="cycle_intervals">Cycle intervals</string>
+    <string name="edit_intervals">Edit intervals</string>
+    <string name="preferred_time">Preferred time</string>
+    <string name="about">About</string>
+
+    <!-- Assuntos -->
+    <string name="new_subject">New subject</string>
+    <string name="edit_subject">Edit subject</string>
+    <string name="title">Title</string>
+    <string name="description_optional">Description (optional)</string>
+    <string name="study_date">Study date</string>
+    <string name="no_subjects_registered_yet">No subjects registered yet.</string>
+
+    <!-- SeletorData -->
+    <string name="ok">OK</string>
+
+    <!-- OpcoesAvaliacao -->
+    <string name="forgot">Forgot</string>
+    <string name="resets_cycle_to_1_day">Resets the cycle to 1 day</string>
+    <string name="difficult">Difficult</string>
+    <string name="repeats_current_cycle">Repeats the current cycle</string>
+    <string name="good">Good</string>
+    <string name="advances_one_cycle">Advances one cycle</string>
+    <string name="easy">Easy</string>
+    <string name="advances_two_cycles">Advances two cycles</string>
+
+    <!-- Notificacoes -->
+    <string name="pending_reviews">Pending reviews</string>
+    <string name="you_have_one_review_today">You have 1 review to do today.</string>
+    <string name="you_have_reviews_today">You have %d reviews to do today.</string>
+    <string name="review_reminders">Review reminders</string>
+    <string name="notifications_about_pending_reviews">Notifications about pending reviews of the day</string>
+
+    <!-- Configuracoes -->
+    <string name="reading_backup">Reading backup</string>
+    <string name="verifying_file_integrity">Verifying the file integrity…</string>
+    <string name="restoring">Restoring</string>
+    <string name="replacing_data_dont_close_app">Replacing data. Please don\'t close the app.</string>
+    <string name="backup_and_data">Backup and data</string>
+    <string name="create_full_backup">Create a full backup to save or transfer your data.</string>
+    <string name="export">Export</string>
+    <string name="restore">Restore</string>
+    <string name="share_backup">Share backup</string>
+    <string name="export_data">Export data</string>
+    <string name="choose_export_format">Choose the export format.</string>
+    <string name="full_backup_revisar">Full backup (.revisaciclo): can be restored by the app.</string>
+
+    <!-- Disciplinas -->
+    <string name="new_discipline">New discipline</string>
+    <string name="no_disciplines_registered_yet">No disciplines registered yet.</string>
+    <string name="tap_plus_to_create_first">Tap + to create the first.</string>
+
+    <!-- Estatisticas -->
+    <string name="statistics">Statistics</string>
+    <string name="active_project">Active project</string>
+    <string name="global_totals_all_projects">Global totals (all projects)</string>
+    <string name="total_reviews_recorded">total review(s) recorded</string>
+
+    <!-- Projetos -->
+    <string name="new_project">New project</string>
+    <string name="edit_project">Edit project</string>
+    <string name="no_projects_registered_yet">No projects registered yet.</string>
+    <string name="set_as_active">Set as active</string>
+    <string name="archive">Archive</string>
+    <string name="unarchive">Unarchive</string>
+
+    <!-- Revisoes -->
+    <string name="no_pending_reviews_all_set">No pending reviews. You\'re all set!</string>
+    <string name="how_was_the_review">How was the review?</string>
+    <string name="rate_review">Rate review</string>
+    <string name="restore_confirm_message">This replaces ALL current data with the data from the file. A backup of the current state is made first.</string>
+    <string name="revisions">reviews</string>
+    <string name="revisions_pretend">Revisions you intend to complete per day.</string>
+    <string name="meta_value">%d reviews</string>
+    <string name="version">Version %s</string>
+    <string name="theme_claro">Clear</string>
+    <string name="theme_escuro">Dark</string>
+    <string name="theme_automatico">Automatic</string>
+    <string name="intervals_between_reviews">Days between reviews: %s</string>
 </resources>

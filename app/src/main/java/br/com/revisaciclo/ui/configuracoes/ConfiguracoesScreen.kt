@@ -127,12 +127,12 @@ fun ConfiguracoesScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Configurações") },
+                title = { Text(text = getString(R.string.settings)) },
                 navigationIcon = {
                     IconButton(onClick = onVoltar) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Voltar",
+                            contentDescription = getString(R.string.back),
                         )
                     }
                 },
@@ -244,8 +244,8 @@ fun ConfiguracoesScreen(
         AlertDialog(
             onDismissRequest = {},
             confirmButton = {},
-            title = { Text(text = "Lendo backup") },
-            text = { Text(text = "Verificando a integridade do arquivo…") },
+            title = { Text(text = getString(R.string.reading_backup)) },
+            text = { Text(text = getString(R.string.verifying_file_integrity)) },
         )
     }
 
@@ -253,8 +253,8 @@ fun ConfiguracoesScreen(
         AlertDialog(
             onDismissRequest = {},
             confirmButton = {},
-            title = { Text(text = "Restaurando") },
-            text = { Text(text = "Substituindo os dados. Não feche o aplicativo.") },
+            title = { Text(text = getString(R.string.restoring)) },
+            text = { Text(text = getString(R.string.replacing_data_dont_close_app)) },
         )
     }
 }
@@ -280,7 +280,7 @@ private fun SecaoBackup(
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-            Text(text = "Backup e dados", style = MaterialTheme.typography.titleMedium)
+            Text(text = getString(R.string.backup_and_data), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Crie um backup completo para guardar ou transferir seus dados. " +
@@ -298,14 +298,14 @@ private fun SecaoBackup(
                     enabled = !ocupado,
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text(text = "Exportar")
+                    Text(text = getString(R.string.export))
                 }
                 OutlinedButton(
                     onClick = onRestaurar,
                     enabled = !ocupado,
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text(text = "Restaurar")
+                    Text(text = getString(R.string.restore))
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -319,7 +319,7 @@ private fun SecaoBackup(
                     contentDescription = null,
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Compartilhar backup")
+                Text(text = getString(R.string.share_backup))
             }
         }
     }
@@ -333,33 +333,33 @@ private fun DialogoExportar(
 ) {
     AlertDialog(
         onDismissRequest = onDispensar,
-        title = { Text(text = "Exportar dados") },
+        title = { Text(text = getString(R.string.export_data)) },
         text = {
             Column {
                 Text(
-                    text = "Escolha o formato de exportação.",
+                    text = getString(R.string.choose_export_format),
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = "Backup completo (.revisaciclo): pode ser restaurado pelo aplicativo.",
+                    text = getString(R.string.full_backup_revisar),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "JSON portátil (.json): formato aberto para leitura em outras " +
-                        "ferramentas.",
+                    text = "Portable JSON (.json): open format for reading in other " +
+                        "tools.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         },
         confirmButton = {
-            TextButton(onClick = onBackup) { Text(text = "Backup completo") }
+            TextButton(onClick = onBackup) { Text(text = getString(R.string.backup_and_data)) }
         },
         dismissButton = {
-            TextButton(onClick = onJson) { Text(text = "JSON portátil") }
+            TextButton(onClick = onJson) { Text(text = getString(R.string.backup_and_data)) }
         },
     )
 }
@@ -379,43 +379,40 @@ private fun DialogoConfirmarRestauracao(
     }
     AlertDialog(
         onDismissRequest = { if (!restaurando) onCancelar() },
-        title = { Text(text = "Restaurar backup") },
+        title = { Text(text = getString(R.string.restore)) },
         text = {
-            Column {
-                Text(
-                    text = "Isto substitui TODOS os dados atuais pelos dados do arquivo. " +
-                        "Uma cópia de segurança do estado atual é feita antes.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                Text(text = "Criado em: $data", style = MaterialTheme.typography.bodyMedium)
-                Text(
-                    text = "Projetos: ${resumo.projetos}",
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                Text(
-                    text = "Disciplinas: ${resumo.disciplinas}",
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                Text(
-                    text = "Assuntos: ${resumo.assuntos}",
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                Text(
-                    text = "Revisões: ${resumo.revisoes}",
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
+            Text(
+                text = getString(R.string.restore_confirm_message),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(text = "Criado em: $data", style = MaterialTheme.typography.bodyMedium)
+            Text(
+                text = "Projetos: ${resumo.projetos}",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Text(
+                text = "Disciplinas: ${resumo.disciplinas}",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Text(
+                text = "Assuntos: ${resumo.assuntos}",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Text(
+                text = "Revisões: ${resumo.revisoes}",
+                style = MaterialTheme.typography.bodyMedium,
+            )
         },
         confirmButton = {
             TextButton(onClick = onConfirmar, enabled = !restaurando) {
-                Text(text = "Restaurar")
+                Text(text = getString(R.string.restore))
             }
         },
         dismissButton = {
             TextButton(onClick = onCancelar, enabled = !restaurando) {
-                Text(text = "Cancelar")
+                Text(text = getString(R.string.cancel))
             }
         },
     )
@@ -430,7 +427,7 @@ private fun SecaoNotificacoes(
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
             Text(
-                text = "Notificações",
+                text = getString(R.string.settings),
                 style = MaterialTheme.typography.titleMedium,
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -439,9 +436,9 @@ private fun SecaoNotificacoes(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(text = "Lembretes de revisão", style = MaterialTheme.typography.bodyLarge)
+                    Text(text = getString(R.string.review_reminders), style = MaterialTheme.typography.bodyLarge)
                     Text(
-                        text = "Avisa quando houver revisões pendentes no dia.",
+                        text = getString(R.string.notifications_about_pending_reviews),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -450,7 +447,7 @@ private fun SecaoNotificacoes(
                     checked = preferencias.notificacoesAtivas,
                     onCheckedChange = onAtivar,
                     modifier = Modifier.semantics {
-                        contentDescription = "Lembretes de revisão"
+                        contentDescription = getString(R.string.review_reminders)
                     },
                 )
             }
@@ -460,7 +457,7 @@ private fun SecaoNotificacoes(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(text = "Horário preferido", style = MaterialTheme.typography.bodyLarge)
+                    Text(text = getString(R.string.preferred_time), style = MaterialTheme.typography.bodyLarge)
                     Text(
                         text = formatarHorario(preferencias.horarioNotificacao),
                         style = MaterialTheme.typography.bodyMedium,
@@ -468,7 +465,7 @@ private fun SecaoNotificacoes(
                     )
                 }
                 OutlinedButton(onClick = onEscolherHorario) {
-                    Text(text = "Alterar")
+                    Text(text = getString(R.string.change))
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -492,13 +489,13 @@ private fun SecaoMetaDiaria(
             Text(text = "Meta diária", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Revisões que você pretende concluir por dia.",
+                text = getString(R.string.revisions_pretend),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = "$metaDiaria revisões",
+                text = getString(R.string.meta_value, metaDiaria),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
             )
@@ -520,9 +517,9 @@ private fun SecaoTema(
     onSelecionar: (TemaApp) -> Unit,
 ) {
     val opcoes = listOf(
-        TemaApp.CLARO to "Claro",
-        TemaApp.ESCURO to "Escuro",
-        TemaApp.AUTOMATICO to "Automático",
+        TemaApp.CLARO to getString(R.string.theme_claro),
+        TemaApp.ESCURO to getString(R.string.theme_escuro),
+        TemaApp.AUTOMATICO to getString(R.string.theme_automatico),
     )
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
@@ -550,10 +547,10 @@ private fun SecaoIntervalos(
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-            Text(text = "Intervalos do ciclo", style = MaterialTheme.typography.titleMedium)
+            Text(text = getString(R.string.cycle_intervals), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Dias entre revisões: ${ValidadorIntervalos.formatar(intervalos)}",
+                text = getString(R.string.intervals_between_reviews, ValidadorIntervalos.formatar(intervalos)),
                 style = MaterialTheme.typography.bodyLarge,
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -566,7 +563,7 @@ private fun SecaoIntervalos(
             )
             Spacer(modifier = Modifier.height(12.dp))
             OutlinedButton(onClick = onEditar) {
-                Text(text = "Editar intervalos")
+                Text(text = getString(R.string.edit_intervals))
             }
         }
     }
@@ -576,18 +573,17 @@ private fun SecaoIntervalos(
 private fun SecaoSobre(versao: String) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-            Text(text = "Sobre", style = MaterialTheme.typography.titleMedium)
+            Text(text = getString(R.string.about), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "RevisaCiclo", style = MaterialTheme.typography.bodyLarge)
+            Text(text = getString(R.string.app_name), style = MaterialTheme.typography.bodyLarge)
             Text(
-                text = "Versão $versao",
+                text = getString(R.string.version, versao),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Aplicativo offline de revisão espaçada. Seus dados ficam apenas no " +
-                    "dispositivo.",
+                text = getString(R.string.offline_note),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

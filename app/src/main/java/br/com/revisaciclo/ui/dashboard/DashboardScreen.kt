@@ -78,13 +78,13 @@ private fun DashboardContent(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Dashboard") },
+                title = { Text(text = getString(R.string.dashboard)) },
                 actions = {
                     SeletorProjetoAtivo(onGerenciarProjetos = onGerenciarProjetos)
                     IconButton(onClick = onAbrirConfiguracoes) {
                         Icon(
                             imageVector = Icons.Default.Settings,
-                            contentDescription = "Configurações",
+                            contentDescription = getString(R.string.settings),
                         )
                     }
                 },
@@ -108,13 +108,13 @@ private fun DashboardContent(
             CartaoProximaRevisao(estado.proximaRevisao)
 
             Text(
-                text = "Progresso por disciplina",
+                text = getString(R.string.progress_by_discipline),
                 style = MaterialTheme.typography.titleMedium,
             )
 
             if (estado.progressos.isEmpty()) {
                 Text(
-                    text = "Nenhuma disciplina cadastrada ainda.",
+                    text = getString(R.string.no_disciplines_registered_yet),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -139,11 +139,11 @@ private fun CartaoProgressoGeral(estado: DashboardUiState) {
             ProgressoCircular(progresso = estado.progressoGeral, tamanho = 180.dp)
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "${estado.revisoesConcluidas} de ${estado.totalRevisoes} revisões concluídas",
+                text = "${estado.revisoesConcluidas} de ${estado.totalRevisoes} ${getString(R.string.review)} ${getString(R.string.completed)}",
                 style = MaterialTheme.typography.bodyLarge,
             )
             Text(
-                text = "${estado.revisoesPendentes} revisões pendentes",
+                text = "${estado.revisoesPendentes} ${getString(R.string.pending)}",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -213,17 +213,17 @@ private fun LinhaIndicadores(estado: DashboardUiState) {
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Indicador(
-            titulo = "Disciplinas",
+            titulo = getString(R.string.disciplines),
             valor = estado.totalDisciplinas.toString(),
             modifier = Modifier.weight(1f),
         )
         Indicador(
-            titulo = "Assuntos",
+            titulo = getString(R.string.subjects),
             valor = estado.totalAssuntos.toString(),
             modifier = Modifier.weight(1f),
         )
         Indicador(
-            titulo = "Pendentes",
+            titulo = getString(R.string.pending),
             valor = estado.revisoesPendentes.toString(),
             modifier = Modifier.weight(1f),
         )
@@ -266,12 +266,12 @@ private fun CartaoMetaDiaria(progresso: ProgressoMeta) {
                 .padding(16.dp),
         ) {
             Text(
-                text = "Meta diária",
+                text = getString(R.string.daily_goal),
                 style = MaterialTheme.typography.titleMedium,
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "${progresso.concluidasHoje} de ${progresso.metaDiaria} revisões hoje",
+                text = "${progresso.concluidasHoje} de ${progresso.metaDiaria} ${getString(R.string.reviews_today)}",
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold,
             )
@@ -283,9 +283,9 @@ private fun CartaoMetaDiaria(progresso: ProgressoMeta) {
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = if (progresso.atingida) {
-                    "Meta atingida. Bom trabalho!"
+                    getString(R.string.daily_goal_met_good_work)
                 } else {
-                    "Faltam ${progresso.restantes} revisão(ões) para a meta."
+                    "${getString(R.string.remaining)} ${progresso.restantes} ${getString(R.string.reviews_to_goal)}"
                 },
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -303,13 +303,13 @@ private fun CartaoProximaRevisao(revisao: Revisao?) {
                 .padding(16.dp),
         ) {
             Text(
-                text = "Próxima revisão",
+                text = getString(R.string.next_review),
                 style = MaterialTheme.typography.titleMedium,
             )
             Spacer(modifier = Modifier.height(4.dp))
             if (revisao == null) {
                 Text(
-                    text = "Nenhuma revisão agendada.",
+                    text = getString(R.string.no_review_scheduled),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -321,11 +321,14 @@ private fun CartaoProximaRevisao(revisao: Revisao?) {
                 )
                 Text(
                     text = if (revisao.status == StatusRevisao.ATRASADA) {
-                        "Atrasada — revisão do ciclo ${revisao.indiceCiclo}"
+                        "${getString(R.string.overdue)} — ${getString(R.string.review)} ${getString(R.string.cycle)} ${revisao.indiceCiclo}"
                     } else {
-                        "Ciclo ${revisao.indiceCiclo} · intervalo de ${revisao.intervaloDias} dias"
+                        "Ciclo ${revisao.indiceCiclo} · ${getString(R.string.interval_of)} ${revisao.intervaloDias} ${getString(R.string.days)}"
                     },
                     style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
@@ -355,7 +358,7 @@ private fun CartaoDisciplina(progresso: ProgressoDisciplina) {
                     modifier = Modifier.weight(1f),
                 )
                 Text(
-                    text = "${progresso.assuntosAtrasados} atrasado(s)",
+                    text = "${progresso.assuntosAtrasados} ${getString(R.string.overdue)}",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

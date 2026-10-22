@@ -22,16 +22,16 @@ fun OpcoesAvaliacao(
     onAvaliar: (AvaliacaoRevisao) -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Avaliacao(rotulo = "Esqueci", descricao = "Reinicia o ciclo para 1 dia", habilitado) {
+        Avaliacao(rotulo = getString(R.string.forgot), descricao = getString(R.string.resets_cycle_to_1_day), habilitado) {
             onAvaliar(AvaliacaoRevisao.ESQUECI)
         }
-        Avaliacao(rotulo = "Difícil", descricao = "Repete o ciclo atual", habilitado) {
+        Avaliacao(rotulo = getString(R.string.difficult), descricao = getString(R.string.repeats_current_cycle), habilitado) {
             onAvaliar(AvaliacaoRevisao.DIFICIL)
         }
-        Avaliacao(rotulo = "Bom", descricao = "Avança um ciclo", habilitado) {
+        Avaliacao(rotulo = getString(R.string.good), descricao = getString(R.string.advances_one_cycle), habilitado) {
             onAvaliar(AvaliacaoRevisao.BOM)
         }
-        Avaliacao(rotulo = "Fácil", descricao = "Avança dois ciclos", habilitado) {
+        Avaliacao(rotulo = getString(R.string.easy), descricao = getString(R.string.advances_two_cycles), habilitado) {
             onAvaliar(AvaliacaoRevisao.FACIL)
         }
     }

@@ -71,12 +71,12 @@ fun ProjetosScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Projetos") },
+                title = { Text(text = getString(R.string.projects)) },
                 navigationIcon = {
                     IconButton(onClick = onVoltar) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Voltar",
+                            contentDescription = getString(R.string.back),
                         )
                     }
                 },
@@ -89,7 +89,7 @@ fun ProjetosScreen(
                     exibindoDialogo = true
                 },
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Novo projeto")
+                Icon(imageVector = Icons.Default.Add, contentDescription = getString(R.string.new_project))
             }
         },
     ) { padding ->
@@ -100,7 +100,7 @@ fun ProjetosScreen(
                     .fillMaxSize(),
             ) {
                 Text(
-                    text = "Nenhum projeto cadastrado ainda.\nToque em + para criar o primeiro.",
+                    text = getString(R.string.no_projects_registered_yet) + "\n" + getString(R.string.tap_plus_to_create_first),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
@@ -119,7 +119,7 @@ fun ProjetosScreen(
                 if (estado.ativos.isNotEmpty()) {
                     item {
                         Text(
-                            text = "Ativos",
+                            text = getString(R.string.active),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.SemiBold,
                         )
@@ -143,7 +143,7 @@ fun ProjetosScreen(
                 if (estado.arquivados.isNotEmpty()) {
                     item {
                         Text(
-                            text = "Arquivados",
+                            text = getString(R.string.archived),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.SemiBold,
                             modifier = Modifier.padding(top = 8.dp),
@@ -182,7 +182,7 @@ fun ProjetosScreen(
     excluindo?.let { projeto ->
         AlertDialog(
             onDismissRequest = { excluindo = null },
-            title = { Text(text = "Excluir projeto") },
+            title = { Text(text = getString(R.string.delete_project)) },
             text = {
                 Text(
                     text = "Excluir \"${projeto.nome}\" e todas as disciplinas, assuntos e " +
@@ -196,12 +196,12 @@ fun ProjetosScreen(
                         excluindo = null
                     },
                 ) {
-                    Text(text = "Excluir")
+                    Text(text = getString(R.string.delete))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { excluindo = null }) {
-                    Text(text = "Cancelar")
+                    Text(text = getString(R.string.cancel))
                 }
             },
         )
@@ -273,7 +273,7 @@ private fun ItemProjeto(
                 DropdownMenu(expanded = menuAberto, onDismissRequest = { menuAberto = false }) {
                     if (!projeto.arquivado) {
                         DropdownMenuItem(
-                            text = { Text(text = "Definir como ativo") },
+                            text = { Text(text = getString(R.string.set_as_active)) },
                             leadingIcon = { Icon(Icons.Default.Check, contentDescription = null) },
                             onClick = {
                                 menuAberto = false
@@ -282,7 +282,7 @@ private fun ItemProjeto(
                         )
                     }
                     DropdownMenuItem(
-                        text = { Text(text = "Editar") },
+                        text = { Text(text = getString(R.string.edit)) },
                         leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                         onClick = {
                             menuAberto = false
@@ -291,7 +291,7 @@ private fun ItemProjeto(
                     )
                     DropdownMenuItem(
                         text = {
-                            Text(text = if (projeto.arquivado) "Desarquivar" else "Arquivar")
+                            Text(text = if (projeto.arquivado) getString(R.string.unarchive) else getString(R.string.archive))
                         },
                         onClick = {
                             menuAberto = false
@@ -299,7 +299,7 @@ private fun ItemProjeto(
                         },
                     )
                     DropdownMenuItem(
-                        text = { Text(text = "Excluir") },
+                        text = { Text(text = getString(R.string.delete)) },
                         leadingIcon = { Icon(Icons.Default.Delete, contentDescription = null) },
                         onClick = {
                             menuAberto = false
@@ -324,25 +324,25 @@ private fun DialogoProjeto(
 
     AlertDialog(
         onDismissRequest = onDispensar,
-        title = { Text(text = if (projeto == null) "Novo projeto" else "Editar projeto") },
+        title = { Text(text = if (projeto == null) getString(R.string.new_project) else getString(R.string.edit_project)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 OutlinedTextField(
                     value = nome,
                     onValueChange = { nome = it },
-                    label = { Text(text = "Nome") },
+                    label = { Text(text = getString(R.string.name)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 OutlinedTextField(
                     value = descricao,
                     onValueChange = { descricao = it },
-                    label = { Text(text = "Descrição (opcional)") },
+                    label = { Text(text = getString(R.string.description_optional)) },
                     minLines = 2,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Text(
-                    text = "Cor",
+                    text = getString(R.string.color),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.SemiBold,
                 )
@@ -352,10 +352,10 @@ private fun DialogoProjeto(
         confirmButton = {
             TextButton(
                 onClick = { onSalvar(nome, descricao.ifBlank { null }, cor) },
-            ) { Text(text = "Salvar") }
+            ) { Text(text = getString(R.string.save)) }
         },
         dismissButton = {
-            TextButton(onClick = onDispensar) { Text(text = "Cancelar") }
+            TextButton(onClick = onDispensar) { Text(text = getString(R.string.cancel)) }
         },
     )
 }

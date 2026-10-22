@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RevisaCiclo</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard">Dashboard</string>
+    <string name="settings">Configurações</string>
+    <string name="progress_by_discipline">Progresso por disciplina</string>
+    <string name="no_disciplines_registered_yet">Nenhuma disciplina cadastrada ainda.</string>
+    <string name="tap_plus_to_add">Toque em + para adicionar.</string>
+    <string name="no_review_scheduled">Nenhuma revisão agendada.</string>
+    <string name="overdue_cycle">Atrasada — ciclo</string>
+    <string name="completed">concluído</string>
+    <string name="disciplines">Disciplinas</string>
+    <string name="subjects">Assuntos</string>
+    <string name="pending">Pendentes</string>
+    <string name="daily_goal">Meta diária</string>
+    <string name="reviews_today">revisão(ões) hoje</string>
+    <string name="daily_goal_met_good_work">Meta atingida. Bom trabalho!</string>
+    <string name="remaining">Faltam</string>
+    <string name="reviews_to_goal">revisão(ões) para a meta.</string>
+    <string name="next_review">Próxima revisão</string>
+    <string name="cycle">ciclo</string>
+    <string name="interval_of">intervalo de</string>
+    <string name="days">dias</string>
+    <string name="overdue">atrasada</string>
+
+    <!-- Assuntos -->
+    <string name="new_subject">Novo assunto</string>
+    <string name="button_new">Novo</string>
+    <string name="up_to_date">Em dia</string>
+    <string name="edit_subject">Editar assunto</string>
+    <string name="title">Título</string>
+    <string name="description_optional">Descrição (opcional)</string>
+    <string name="study_date">Data de estudo</string>
+    <string name="no_subjects_registered_yet">Nenhum assunto cadastrado ainda.</string>
+
+    <!-- SeletorData -->
+    <string name="ok">OK</string>
+
+    <!-- OpcoesAvaliacao -->
+    <string name="forgot">Esqueci</string>
+    <string name="resets_cycle_to_1_day">Reseta o ciclo para 1 dia</string>
+    <string name="difficult">Difícil</string>
+    <string name="repeats_current_cycle">Repete o ciclo atual</string>
+    <string name="good">Bom</string>
+    <string name="advances_one_cycle">Avança um ciclo</string>
+    <string name="easy">Fácil</string>
+    <string name="advances_two_cycles">Avança dois ciclos</string>
+
+    <!-- Notificacoes -->
+    <string name="pending_reviews">Revisões pendentes</string>
+    <string name="you_have_one_review_today">Você tem 1 revisão para fazer hoje.</string>
+    <string name="you_have_reviews_today">Você tem %d revisões para fazer hoje.</string>
+    <string name="review_reminders">Lembretes de revisão</string>
+    <string name="notifications_about_pending_reviews">Avisos sobre revisões pendentes do dia</string>
+
+    <!-- Configuracoes -->
+    <string name="reading_backup">Lendo backup</string>
+    <string name="verifying_file_integrity">Verificando a integridade do arquivo…</string>
+    <string name="restoring">Restaurando</string>
+    <string name="replacing_data_dont_close_app">Substituindo os dados. Não feche o aplicativo.</string>
+    <string name="backup_and_data">Backup e dados</string>
+    <string name="create_full_backup">Crie um backup completo para guardar ou transferir seus dados.</string>
+    <string name="export">Exportar</string>
+    <string name="restore">Restaurar</string>
+    <string name="share_backup">Compartilhar backup</string>
+    <string name="export_data">Exportar dados</string>
+    <string name="choose_export_format">Escolha o formato de exportação.</string>
+    <string name="full_backup_revisar">Backup completo (.revisaciclo): pode ser restaurado pelo aplicativo.</string>
+
+    <!-- Disciplinas -->
+    <string name="new_discipline">Nova disciplina</string>
+    <string name="tap_plus_to_create_first">Toque em + para criar a primeira.</string>
+
+    <!-- Estatisticas -->
+    <string name="statistics">Estatísticas</string>
+    <string name="active_project">Projeto ativo</string>
+    <string name="global_totals_all_projects">Totais globais (todos os projetos)</string>
+    <string name="total_reviews_recorded">revisão(ões) registrada(s) no total</string>
+
+    <!-- Projetos -->
+    <string name="new_project">Novo projeto</string>
+    <string name="edit_project">Editar projeto</string>
+    <string name="no_projects_registered_yet">Nenhum projeto cadastrado ainda.</string>
+    <string name="set_as_active">Definir como ativo</string>
+    <string name="archive">Arquivar</string>
+    <string name="unarchive">Desarquivar</string>
+
+    <!-- Revisoes -->
+    <string name="no_pending_reviews_all_set">Nenhuma revisão pendente. Tudo em dia!</string>
+    <string name="how_was_the_review">Como foi a revisão?</string>
+    <string name="rate_review">Avaliar revisão</string>
+    <string name="change">Alterar</string>
+    <string name="theme">Tema</string>
+    <string name="cycle_intervals">Intervalos do ciclo</string>
+    <string name="edit_intervals">Editar intervalos</string>
+    <string name="preferred_time">Horário preferido</string>
+    <string name="about">Sobre</string>
+    <string name="restore_confirm_message">Isso substitui TODOS os dados atuais pelos dados do arquivo. Uma cópia de segurança do estado atual é feita antes.</string>
+    <string name="revisions_pretend">Revisões que você pretende concluir por dia.</string>
+    <string name="meta_value">%d revisões</string>
+    <string name="offline_note">Aplicativo offline de revisão espaçada. Seus dados ficam apenas no dispositivo.</string>
+    <string name="version">Versão %s</string>
+    <string name="theme_claro">Claro</string>
+    <string name="theme_escuro">Escuro</string>
+    <string name="theme_automatico">Automático</string>
+    <string name="intervals_between_reviews">Dias entre revisões: %s</string>
+</resources>

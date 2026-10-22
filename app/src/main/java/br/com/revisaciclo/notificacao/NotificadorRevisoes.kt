@@ -44,9 +44,9 @@ class NotificadorRevisoes(private val context: Context) {
         )
 
         val texto = if (quantidade == 1) {
-            "Você tem 1 revisão para fazer hoje."
+            context.getString(R.string.you_have_one_review_today)
         } else {
-            "Você tem $quantidade revisões para fazer hoje."
+            context.getString(R.string.you_have_reviews_today, quantidade)
         }
 
         val notificacao = NotificationCompat.Builder(context, CanalNotificacao.ID)

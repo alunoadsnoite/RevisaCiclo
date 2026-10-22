@@ -58,7 +58,7 @@ fun EstatisticasScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Estatísticas") },
+                title = { Text(text = getString(R.string.statistics)) },
                 actions = { SeletorProjetoAtivo(onGerenciarProjetos = onGerenciarProjetos) },
             )
         },
@@ -131,25 +131,25 @@ private fun CartaoResumo(estatisticas: br.com.revisaciclo.domain.model.Estatisti
         ) {
             Indicador(
                 valor = estatisticas.concluidas,
-                rotulo = "Concluídas",
+                rotulo = getString(R.string.completed),
                 cor = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.weight(1f),
             )
             Indicador(
                 valor = estatisticas.pendentes,
-                rotulo = "Pendentes",
+                rotulo = getString(R.string.pending),
                 cor = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier.weight(1f),
             )
             Indicador(
                 valor = estatisticas.atrasadas,
-                rotulo = "Atrasadas",
+                rotulo = getString(R.string.overdue),
                 cor = MaterialTheme.colorScheme.error,
                 modifier = Modifier.weight(1f),
             )
         }
         Text(
-            text = "${estatisticas.totalRevisoes} revisão(ões) registrada(s) no total",
+            text = "${estatisticas.totalRevisoes} ${getString(R.string.review)} ${getString(R.string.total_reviews_recorded)}",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

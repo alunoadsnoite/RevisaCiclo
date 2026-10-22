@@ -71,12 +71,12 @@ fun AssuntosScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = estado.disciplina?.nome ?: "Assuntos") },
+                title = { Text(text = estado.disciplina?.nome ?: getString(R.string.subjects)) },
                 navigationIcon = {
                     IconButton(onClick = onVoltar) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Voltar",
+                            contentDescription = getString(R.string.back),
                         )
                     }
                 },
@@ -89,7 +89,7 @@ fun AssuntosScreen(
                     exibindoDialogo = true
                 },
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Novo assunto")
+                Icon(imageVector = Icons.Default.Add, contentDescription = getString(R.string.new_subject))
             }
         },
     ) { padding ->
@@ -100,7 +100,7 @@ fun AssuntosScreen(
         ) {
             if (!estado.carregando && estado.assuntos.isEmpty()) {
                 Text(
-                    text = "Nenhum assunto cadastrado ainda.\nToque em + para adicionar.",
+                    text = getString(R.string.no_subjects_registered_yet) + "\n" + getString(R.string.tap_plus_to_add),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
@@ -143,7 +143,7 @@ fun AssuntosScreen(
     excluindo?.let { assunto ->
         AlertDialog(
             onDismissRequest = { excluindo = null },
-            title = { Text(text = "Excluir assunto") },
+            title = { Text(text = getString(R.string.delete_subject)) },
             text = { Text(text = "Excluir \"${assunto.titulo}\" e suas revisões?") },
             confirmButton = {
                 TextButton(
@@ -152,12 +152,12 @@ fun AssuntosScreen(
                         excluindo = null
                     },
                 ) {
-                    Text(text = "Excluir")
+                    Text(text = getString(R.string.delete))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { excluindo = null }) {
-                    Text(text = "Cancelar")
+                    Text(text = getString(R.string.cancel))
                 }
             },
         )
@@ -191,7 +191,7 @@ private fun ItemAssunto(
                     }
                     DropdownMenu(expanded = menuAberto, onDismissRequest = { menuAberto = false }) {
                         DropdownMenuItem(
-                            text = { Text(text = "Editar") },
+                            text = { Text(text = getString(R.string.edit)) },
                             leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                             onClick = {
                                 menuAberto = false
@@ -199,7 +199,7 @@ private fun ItemAssunto(
                             },
                         )
                         DropdownMenuItem(
-                            text = { Text(text = "Excluir") },
+                            text = { Text(text = getString(R.string.delete)) },
                             leadingIcon = { Icon(Icons.Default.Delete, contentDescription = null) },
                             onClick = {
                                 menuAberto = false
@@ -239,9 +239,9 @@ private fun ItemAssunto(
 @Composable
 private fun EtiquetaEstado(estado: EstadoRevisao) {
     val (texto, cor) = when (estado) {
-        EstadoRevisao.NOVO -> "Novo" to MaterialTheme.colorScheme.secondaryContainer
-        EstadoRevisao.EM_DIA -> "Em dia" to MaterialTheme.colorScheme.primaryContainer
-        EstadoRevisao.ATRASADO -> "Atrasado" to MaterialTheme.colorScheme.errorContainer
+        EstadoRevisao.NOVO -> getString(R.string.button_new) to MaterialTheme.colorScheme.secondaryContainer
+        EstadoRevisao.EM_DIA -> getString(R.string.up_to_date) to MaterialTheme.colorScheme.primaryContainer
+        EstadoRevisao.ATRASADO -> getString(R.string.overdue) to MaterialTheme.colorScheme.errorContainer
     }
     Surface(
         color = cor,
@@ -270,26 +270,26 @@ private fun DialogoAssunto(
 
     AlertDialog(
         onDismissRequest = onDispensar,
-        title = { Text(text = if (assunto == null) "Novo assunto" else "Editar assunto") },
+        title = { Text(text = if (assunto == null) getString(R.string.new_subject) else getString(R.string.edit_subject)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
                     value = titulo,
                     onValueChange = { titulo = it },
-                    label = { Text(text = "Título") },
+                    label = { Text(text = getString(R.string.title)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 OutlinedTextField(
                     value = descricao,
                     onValueChange = { descricao = it },
-                    label = { Text(text = "Descrição (opcional)") },
+                    label = { Text(text = getString(R.string.description_optional)) },
                     minLines = 2,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Column {
                     Text(
-                        text = "Data de estudo",
+                        text = getString(R.string.study_date),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -307,11 +307,11 @@ private fun DialogoAssunto(
         },
         confirmButton = {
             TextButton(onClick = { onSalvar(titulo, descricao.ifBlank { null }, dataEstudo) }) {
-                Text(text = "Salvar")
+                Text(text = getString(R.string.save))
             }
         },
         dismissButton = {
-            TextButton(onClick = onDispensar) { Text(text = "Cancelar") }
+            TextButton(onClick = onDispensar) { Text(text = getString(R.string.cancel)) }
         },
     )
 

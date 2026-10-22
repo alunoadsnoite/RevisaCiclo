@@ -3,6 +3,7 @@ package br.com.revisaciclo.notificacao
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import br.com.revisaciclo.R
 
 /**
  * Canal de notificação do Android (obrigatório a partir do Android 8, que é o
@@ -16,10 +17,10 @@ object CanalNotificacao {
         val gerenciador = context.getSystemService(NotificationManager::class.java) ?: return
         val canal = NotificationChannel(
             ID,
-            "Lembretes de revisão",
+            context.getString(R.string.review_reminders),
             NotificationManager.IMPORTANCE_DEFAULT,
         ).apply {
-            description = "Avisos sobre revisões pendentes do dia"
+            description = context.getString(R.string.notifications_about_pending_reviews)
         }
         gerenciador.createNotificationChannel(canal)
     }

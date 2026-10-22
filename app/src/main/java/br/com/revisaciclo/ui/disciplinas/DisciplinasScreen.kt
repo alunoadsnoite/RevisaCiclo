@@ -72,7 +72,7 @@ fun DisciplinasScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Disciplinas") },
+                title = { Text(text = getString(R.string.disciplines)) },
                 actions = { SeletorProjetoAtivo(onGerenciarProjetos = onGerenciarProjetos) },
             )
         },
@@ -83,7 +83,7 @@ fun DisciplinasScreen(
                     exibindoDialogo = true
                 },
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Nova disciplina")
+                Icon(imageVector = Icons.Default.Add, contentDescription = getString(R.string.new_discipline))
             }
         },
     ) { padding ->
@@ -94,7 +94,7 @@ fun DisciplinasScreen(
         ) {
             if (!estado.carregando && estado.disciplinas.isEmpty()) {
                 Text(
-                    text = "Nenhuma disciplina cadastrada ainda.\nToque em + para criar a primeira.",
+                    text = getString(R.string.no_disciplines_registered_yet) + "\n" + getString(R.string.tap_plus_to_create_first),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
@@ -137,7 +137,7 @@ fun DisciplinasScreen(
     excluindo?.let { disciplina ->
         AlertDialog(
             onDismissRequest = { excluindo = null },
-            title = { Text(text = "Excluir disciplina") },
+            title = { Text(text = getString(R.string.delete_discipline)) },
             text = {
                 Text(
                     text = "Excluir \"${disciplina.nome}\" e todos os assuntos e revisões relacionados?",
@@ -150,12 +150,12 @@ fun DisciplinasScreen(
                         excluindo = null
                     },
                 ) {
-                    Text(text = "Excluir")
+                    Text(text = getString(R.string.delete))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { excluindo = null }) {
-                    Text(text = "Cancelar")
+                    Text(text = getString(R.string.cancel))
                 }
             },
         )
@@ -200,7 +200,7 @@ private fun ItemDisciplina(
                 }
                 DropdownMenu(expanded = menuAberto, onDismissRequest = { menuAberto = false }) {
                     DropdownMenuItem(
-                        text = { Text(text = "Editar") },
+                        text = { Text(text = getString(R.string.edit)) },
                         leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                         onClick = {
                             menuAberto = false
@@ -208,7 +208,7 @@ private fun ItemDisciplina(
                         },
                     )
                     DropdownMenuItem(
-                        text = { Text(text = "Excluir") },
+                        text = { Text(text = getString(R.string.delete)) },
                         leadingIcon = { Icon(Icons.Default.Delete, contentDescription = null) },
                         onClick = {
                             menuAberto = false
@@ -232,18 +232,18 @@ private fun DialogoDisciplina(
 
     AlertDialog(
         onDismissRequest = onDispensar,
-        title = { Text(text = if (disciplina == null) "Nova disciplina" else "Editar disciplina") },
+        title = { Text(text = if (disciplina == null) getString(R.string.new_discipline) else getString(R.string.edit_discipline)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 OutlinedTextField(
                     value = nome,
                     onValueChange = { nome = it },
-                    label = { Text(text = "Nome") },
+                    label = { Text(text = getString(R.string.name)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Text(
-                    text = "Cor",
+                    text = getString(R.string.color),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.SemiBold,
                 )
@@ -251,10 +251,10 @@ private fun DialogoDisciplina(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onSalvar(nome, cor) }) { Text(text = "Salvar") }
+            TextButton(onClick = { onSalvar(nome, cor) }) { Text(text = getString(R.string.save)) }
         },
         dismissButton = {
-            TextButton(onClick = onDispensar) { Text(text = "Cancelar") }
+            TextButton(onClick = onDispensar) { Text(text = getString(R.string.cancel)) }
         },
     )
 }
