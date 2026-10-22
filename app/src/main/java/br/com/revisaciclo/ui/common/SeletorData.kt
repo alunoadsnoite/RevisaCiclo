@@ -1,5 +1,8 @@
 package br.com.revisaciclo.ui.common
 
+import br.com.revisaciclo.R
+import br.com.revisaciclo.ui.common.recursosLocalizados
+
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,6 +21,7 @@ fun SeletorData(
     onConfirmar: (LocalDate) -> Unit,
     onDispensar: () -> Unit,
 ) {
+    val textos = recursosLocalizados()
     val estado = rememberDatePickerState(
         initialSelectedDateMillis = dataInicial.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli(),
     )
@@ -35,12 +39,12 @@ fun SeletorData(
                     onDispensar()
                 },
             ) {
-                Text(text = getString(R.string.ok))
+                Text(text = textos.getString(R.string.ok))
             }
         },
         dismissButton = {
             TextButton(onClick = onDispensar) {
-                Text(text = getString(R.string.cancel))
+                Text(text = textos.getString(R.string.cancel))
             }
         },
     ) {

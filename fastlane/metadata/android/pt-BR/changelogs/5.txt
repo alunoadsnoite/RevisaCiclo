@@ -1,0 +1,1 @@
+Interface em português e inglês, idioma por aplicativo no Android compatível e datas localizadas.

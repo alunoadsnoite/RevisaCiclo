@@ -1,5 +1,8 @@
 package br.com.revisaciclo.ui.dashboard
 
+import br.com.revisaciclo.R
+import br.com.revisaciclo.ui.common.recursosLocalizados
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -75,16 +78,17 @@ private fun DashboardContent(
     onAbrirConfiguracoes: () -> Unit,
     onGerenciarProjetos: () -> Unit,
 ) {
+    val textos = recursosLocalizados()
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = getString(R.string.dashboard)) },
+                title = { Text(text = textos.getString(R.string.dashboard)) },
                 actions = {
                     SeletorProjetoAtivo(onGerenciarProjetos = onGerenciarProjetos)
                     IconButton(onClick = onAbrirConfiguracoes) {
                         Icon(
                             imageVector = Icons.Default.Settings,
-                            contentDescription = getString(R.string.settings),
+                            contentDescription = textos.getString(R.string.settings),
                         )
                     }
                 },
@@ -108,13 +112,13 @@ private fun DashboardContent(
             CartaoProximaRevisao(estado.proximaRevisao)
 
             Text(
-                text = getString(R.string.progress_by_discipline),
+                text = textos.getString(R.string.progress_by_subject),
                 style = MaterialTheme.typography.titleMedium,
             )
 
             if (estado.progressos.isEmpty()) {
                 Text(
-                    text = getString(R.string.no_disciplines_registered_yet),
+                    text = textos.getString(R.string.no_subjects_yet),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -129,6 +133,7 @@ private fun DashboardContent(
 
 @Composable
 private fun CartaoProgressoGeral(estado: DashboardUiState) {
+    val textos = recursosLocalizados()
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier
@@ -139,11 +144,11 @@ private fun CartaoProgressoGeral(estado: DashboardUiState) {
             ProgressoCircular(progresso = estado.progressoGeral, tamanho = 180.dp)
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "${estado.revisoesConcluidas} de ${estado.totalRevisoes} ${getString(R.string.review)} ${getString(R.string.completed)}",
+                text = textos.getString(R.string.of_reviews_completed_format, estado.revisoesConcluidas, estado.totalRevisoes),
                 style = MaterialTheme.typography.bodyLarge,
             )
             Text(
-                text = "${estado.revisoesPendentes} ${getString(R.string.pending)}",
+                text = textos.getString(R.string.pending_reviews_format, estado.revisoesPendentes),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -157,6 +162,7 @@ private fun ProgressoCircular(
     modifier: Modifier = Modifier,
     tamanho: Dp = 160.dp,
 ) {
+    val textos = recursosLocalizados()
     val corPrincipal = MaterialTheme.colorScheme.primary
     val corTrilha = MaterialTheme.colorScheme.surfaceVariant
     val larguraTraco = 18.dp
@@ -198,7 +204,7 @@ private fun ProgressoCircular(
                 fontWeight = FontWeight.Bold,
             )
             Text(
-                text = "concluído",
+                text = textos.getString(R.string.complete),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -208,22 +214,23 @@ private fun ProgressoCircular(
 
 @Composable
 private fun LinhaIndicadores(estado: DashboardUiState) {
+    val textos = recursosLocalizados()
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Indicador(
-            titulo = getString(R.string.disciplines),
+            titulo = textos.getString(R.string.subjects),
             valor = estado.totalDisciplinas.toString(),
             modifier = Modifier.weight(1f),
         )
         Indicador(
-            titulo = getString(R.string.subjects),
+            titulo = textos.getString(R.string.topics),
             valor = estado.totalAssuntos.toString(),
             modifier = Modifier.weight(1f),
         )
         Indicador(
-            titulo = getString(R.string.pending),
+            titulo = textos.getString(R.string.pending),
             valor = estado.revisoesPendentes.toString(),
             modifier = Modifier.weight(1f),
         )
@@ -259,6 +266,7 @@ private fun Indicador(
 
 @Composable
 private fun CartaoMetaDiaria(progresso: ProgressoMeta) {
+    val textos = recursosLocalizados()
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier
@@ -266,12 +274,12 @@ private fun CartaoMetaDiaria(progresso: ProgressoMeta) {
                 .padding(16.dp),
         ) {
             Text(
-                text = getString(R.string.daily_goal),
+                text = textos.getString(R.string.daily_goal),
                 style = MaterialTheme.typography.titleMedium,
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "${progresso.concluidasHoje} de ${progresso.metaDiaria} ${getString(R.string.reviews_today)}",
+                text = textos.getString(R.string.of_reviews_today_format, progresso.concluidasHoje, progresso.metaDiaria),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold,
             )
@@ -283,9 +291,9 @@ private fun CartaoMetaDiaria(progresso: ProgressoMeta) {
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = if (progresso.atingida) {
-                    getString(R.string.daily_goal_met_good_work)
+                    textos.getString(R.string.goal_reached_well_done)
                 } else {
-                    "${getString(R.string.remaining)} ${progresso.restantes} ${getString(R.string.reviews_to_goal)}"
+                    textos.getString(R.string.reviews_left_to_reach_your_goal_format, progresso.restantes)
                 },
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -296,6 +304,7 @@ private fun CartaoMetaDiaria(progresso: ProgressoMeta) {
 
 @Composable
 private fun CartaoProximaRevisao(revisao: Revisao?) {
+    val textos = recursosLocalizados()
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier
@@ -303,13 +312,13 @@ private fun CartaoProximaRevisao(revisao: Revisao?) {
                 .padding(16.dp),
         ) {
             Text(
-                text = getString(R.string.next_review),
+                text = textos.getString(R.string.next_review),
                 style = MaterialTheme.typography.titleMedium,
             )
             Spacer(modifier = Modifier.height(4.dp))
             if (revisao == null) {
                 Text(
-                    text = getString(R.string.no_review_scheduled),
+                    text = textos.getString(R.string.no_reviews_scheduled),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -321,14 +330,11 @@ private fun CartaoProximaRevisao(revisao: Revisao?) {
                 )
                 Text(
                     text = if (revisao.status == StatusRevisao.ATRASADA) {
-                        "${getString(R.string.overdue)} — ${getString(R.string.review)} ${getString(R.string.cycle)} ${revisao.indiceCiclo}"
+                        textos.getString(R.string.overdue_cycle_review_format, revisao.indiceCiclo)
                     } else {
-                        "Ciclo ${revisao.indiceCiclo} · ${getString(R.string.interval_of)} ${revisao.intervaloDias} ${getString(R.string.days)}"
+                        textos.getString(R.string.cycle_day_interval_format, revisao.indiceCiclo, revisao.intervaloDias)
                     },
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
@@ -338,6 +344,7 @@ private fun CartaoProximaRevisao(revisao: Revisao?) {
 
 @Composable
 private fun CartaoDisciplina(progresso: ProgressoDisciplina) {
+    val textos = recursosLocalizados()
     val cor = Color(progresso.cor.toInt())
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
@@ -358,7 +365,7 @@ private fun CartaoDisciplina(progresso: ProgressoDisciplina) {
                     modifier = Modifier.weight(1f),
                 )
                 Text(
-                    text = "${progresso.assuntosAtrasados} ${getString(R.string.overdue)}",
+                    text = textos.getString(R.string.overdue_format, progresso.assuntosAtrasados),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

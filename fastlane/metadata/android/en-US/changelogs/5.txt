@@ -1,0 +1,1 @@
+Portuguese and English interface, per-app language support on compatible Android versions and localized dates.

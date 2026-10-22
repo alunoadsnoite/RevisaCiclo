@@ -1,5 +1,8 @@
 package br.com.revisaciclo.ui.projetos
 
+import br.com.revisaciclo.R
+import br.com.revisaciclo.ui.common.recursosLocalizados
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -63,6 +66,7 @@ fun ProjetosScreen(
     onVoltar: () -> Unit,
     viewModel: ProjetosViewModel = viewModel(factory = ProjetosViewModel.Factory),
 ) {
+    val textos = recursosLocalizados()
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
     var editando by remember { mutableStateOf<ProjetoEstudo?>(null) }
     var exibindoDialogo by remember { mutableStateOf(false) }
@@ -71,12 +75,12 @@ fun ProjetosScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = getString(R.string.projects)) },
+                title = { Text(text = textos.getString(R.string.projects)) },
                 navigationIcon = {
                     IconButton(onClick = onVoltar) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = getString(R.string.back),
+                            contentDescription = textos.getString(R.string.back),
                         )
                     }
                 },
@@ -89,7 +93,7 @@ fun ProjetosScreen(
                     exibindoDialogo = true
                 },
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = getString(R.string.new_project))
+                Icon(imageVector = Icons.Default.Add, contentDescription = textos.getString(R.string.new_project))
             }
         },
     ) { padding ->
@@ -100,7 +104,7 @@ fun ProjetosScreen(
                     .fillMaxSize(),
             ) {
                 Text(
-                    text = getString(R.string.no_projects_registered_yet) + "\n" + getString(R.string.tap_plus_to_create_first),
+                    text = textos.getString(R.string.no_projects_yet_tap_to_create_your_first_one),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
@@ -119,7 +123,7 @@ fun ProjetosScreen(
                 if (estado.ativos.isNotEmpty()) {
                     item {
                         Text(
-                            text = getString(R.string.active),
+                            text = textos.getString(R.string.active),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.SemiBold,
                         )
@@ -143,7 +147,7 @@ fun ProjetosScreen(
                 if (estado.arquivados.isNotEmpty()) {
                     item {
                         Text(
-                            text = getString(R.string.archived),
+                            text = textos.getString(R.string.archived),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.SemiBold,
                             modifier = Modifier.padding(top = 8.dp),
@@ -182,11 +186,10 @@ fun ProjetosScreen(
     excluindo?.let { projeto ->
         AlertDialog(
             onDismissRequest = { excluindo = null },
-            title = { Text(text = getString(R.string.delete_project)) },
+            title = { Text(text = textos.getString(R.string.delete_project)) },
             text = {
                 Text(
-                    text = "Excluir \"${projeto.nome}\" e todas as disciplinas, assuntos e " +
-                        "revisões relacionadas? Esta ação não pode ser desfeita.",
+                    text = textos.getString(R.string.delete_and_all_related_subjects_topics_and_reviews_this_cannot_be_format, projeto.nome),
                 )
             },
             confirmButton = {
@@ -196,12 +199,12 @@ fun ProjetosScreen(
                         excluindo = null
                     },
                 ) {
-                    Text(text = getString(R.string.delete))
+                    Text(text = textos.getString(R.string.delete))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { excluindo = null }) {
-                    Text(text = getString(R.string.cancel))
+                    Text(text = textos.getString(R.string.cancel))
                 }
             },
         )
@@ -218,6 +221,7 @@ private fun ItemProjeto(
     onArquivar: () -> Unit,
     onExcluir: () -> Unit,
 ) {
+    val textos = recursosLocalizados()
     var menuAberto by remember { mutableStateOf(false) }
 
     Card(
@@ -247,7 +251,7 @@ private fun ItemProjeto(
                         Spacer(modifier = Modifier.width(8.dp))
                         Icon(
                             imageVector = Icons.Default.Check,
-                            contentDescription = "Projeto ativo",
+                            contentDescription = textos.getString(R.string.active_project),
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(16.dp),
                         )
@@ -261,19 +265,19 @@ private fun ItemProjeto(
                     )
                 }
                 Text(
-                    text = "$quantidadeDisciplinas disciplina(s)",
+                    text = textos.getString(R.string.subjects_format_2, quantidadeDisciplinas),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             Box {
                 IconButton(onClick = { menuAberto = true }) {
-                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Opções")
+                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = textos.getString(R.string.options))
                 }
                 DropdownMenu(expanded = menuAberto, onDismissRequest = { menuAberto = false }) {
                     if (!projeto.arquivado) {
                         DropdownMenuItem(
-                            text = { Text(text = getString(R.string.set_as_active)) },
+                            text = { Text(text = textos.getString(R.string.set_as_active)) },
                             leadingIcon = { Icon(Icons.Default.Check, contentDescription = null) },
                             onClick = {
                                 menuAberto = false
@@ -282,7 +286,7 @@ private fun ItemProjeto(
                         )
                     }
                     DropdownMenuItem(
-                        text = { Text(text = getString(R.string.edit)) },
+                        text = { Text(text = textos.getString(R.string.edit)) },
                         leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                         onClick = {
                             menuAberto = false
@@ -291,7 +295,7 @@ private fun ItemProjeto(
                     )
                     DropdownMenuItem(
                         text = {
-                            Text(text = if (projeto.arquivado) getString(R.string.unarchive) else getString(R.string.archive))
+                            Text(text = if (projeto.arquivado) textos.getString(R.string.unarchive) else textos.getString(R.string.archive))
                         },
                         onClick = {
                             menuAberto = false
@@ -299,7 +303,7 @@ private fun ItemProjeto(
                         },
                     )
                     DropdownMenuItem(
-                        text = { Text(text = getString(R.string.delete)) },
+                        text = { Text(text = textos.getString(R.string.delete)) },
                         leadingIcon = { Icon(Icons.Default.Delete, contentDescription = null) },
                         onClick = {
                             menuAberto = false
@@ -318,31 +322,32 @@ private fun DialogoProjeto(
     onDispensar: () -> Unit,
     onSalvar: (String, String?, Long) -> Unit,
 ) {
+    val textos = recursosLocalizados()
     var nome by remember { mutableStateOf(projeto?.nome.orEmpty()) }
     var descricao by remember { mutableStateOf(projeto?.descricao.orEmpty()) }
     var cor by remember { mutableLongStateOf(projeto?.cor ?: CORES_DISCIPLINA.first()) }
 
     AlertDialog(
         onDismissRequest = onDispensar,
-        title = { Text(text = if (projeto == null) getString(R.string.new_project) else getString(R.string.edit_project)) },
+        title = { Text(text = if (projeto == null) textos.getString(R.string.new_project) else textos.getString(R.string.edit_project)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 OutlinedTextField(
                     value = nome,
                     onValueChange = { nome = it },
-                    label = { Text(text = getString(R.string.name)) },
+                    label = { Text(text = textos.getString(R.string.name)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 OutlinedTextField(
                     value = descricao,
                     onValueChange = { descricao = it },
-                    label = { Text(text = getString(R.string.description_optional)) },
+                    label = { Text(text = textos.getString(R.string.description_optional)) },
                     minLines = 2,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Text(
-                    text = getString(R.string.color),
+                    text = textos.getString(R.string.color),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.SemiBold,
                 )
@@ -352,10 +357,10 @@ private fun DialogoProjeto(
         confirmButton = {
             TextButton(
                 onClick = { onSalvar(nome, descricao.ifBlank { null }, cor) },
-            ) { Text(text = getString(R.string.save)) }
+            ) { Text(text = textos.getString(R.string.save)) }
         },
         dismissButton = {
-            TextButton(onClick = onDispensar) { Text(text = getString(R.string.cancel)) }
+            TextButton(onClick = onDispensar) { Text(text = textos.getString(R.string.cancel)) }
         },
     )
 }

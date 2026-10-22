@@ -2,6 +2,9 @@
 
 package br.com.revisaciclo.ui.roda
 
+import br.com.revisaciclo.R
+import br.com.revisaciclo.ui.common.recursosLocalizados
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -59,6 +62,7 @@ fun RodaRevisaoScreen(
     onGerenciarProjetos: () -> Unit = {},
     viewModel: RodaRevisaoViewModel = viewModel(factory = RodaRevisaoViewModel.Factory),
 ) {
+    val textos = recursosLocalizados()
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
 
     LifecycleResumeEffect(Unit) {
@@ -69,7 +73,7 @@ fun RodaRevisaoScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Estágios") },
+                title = { Text(text = textos.getString(R.string.stages)) },
                 actions = { SeletorProjetoAtivo(onGerenciarProjetos = onGerenciarProjetos) },
             )
         },
@@ -102,7 +106,7 @@ fun RodaRevisaoScreen(
 
                 if (roda.estaVazia) {
                     Text(
-                        text = "Cadastre disciplinas e assuntos para começar a revisar.",
+                        text = textos.getString(R.string.add_subjects_and_topics_to_start_reviewing),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.fillMaxWidth(),
@@ -112,12 +116,12 @@ fun RodaRevisaoScreen(
                         onClick = onIniciarSessao,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        Text(text = "Iniciar sessão de revisão")
+                        Text(text = textos.getString(R.string.start_review_session))
                     }
                 }
 
                 Text(
-                    text = "Estágios",
+                    text = textos.getString(R.string.stages),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                 )
@@ -147,13 +151,14 @@ private fun RodaCircular(
     estagioSelecionado: Int?,
     onSelecionarEstagio: (Int) -> Unit,
 ) {
+    val textos = recursosLocalizados()
     val esquema = MaterialTheme.colorScheme
-    val descricaoAcessivel = remember(totalAssuntos, estagios) {
+    val descricaoAcessivel = remember(totalAssuntos, estagios, textos) {
         buildString {
-            append("Roda de revisão com $totalAssuntos assuntos. ")
+            append(textos.getString(R.string.review_wheel_with_topics_format, totalAssuntos)).append(' ')
             estagios.forEach { estagio ->
-                val rotulo = if (estagio.intervaloDias == 1) "1 dia" else "${estagio.intervaloDias} dias"
-                append("$rotulo: ${estagio.total} assuntos, ${estagio.atrasados} atrasados. ")
+                val rotulo = if (estagio.intervaloDias == 1) textos.getString(R.string.label_1_day) else textos.getString(R.string.days_format, estagio.intervaloDias)
+                append(textos.getString(R.string.topics_overdue_format, rotulo, estagio.total, estagio.atrasados)).append(' ')
             }
         }
     }
@@ -234,7 +239,7 @@ private fun RodaCircular(
                 fontWeight = FontWeight.Bold,
             )
             Text(
-                text = "assuntos",
+                text = textos.getString(R.string.topics_2),
                 style = MaterialTheme.typography.labelMedium,
                 color = esquema.onSurfaceVariant,
             )
@@ -248,8 +253,9 @@ private fun LinhaEstagio(
     selecionado: Boolean,
     onSelecionar: () -> Unit,
 ) {
+    val textos = recursosLocalizados()
     val esquema = MaterialTheme.colorScheme
-    val rotulo = if (estagio.intervaloDias == 1) "1 dia" else "${estagio.intervaloDias} dias"
+    val rotulo = if (estagio.intervaloDias == 1) textos.getString(R.string.label_1_day) else textos.getString(R.string.days_format, estagio.intervaloDias)
     Card(
         onClick = onSelecionar,
         modifier = Modifier.fillMaxWidth(),
@@ -269,7 +275,7 @@ private fun LinhaEstagio(
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = rotulo, style = MaterialTheme.typography.titleMedium)
                 Text(
-                    text = "${estagio.total} assuntos · ${estagio.atrasados} atrasados · ${estagio.hoje} vencem hoje",
+                    text = textos.getString(R.string.topics_overdue_due_today_format, estagio.total, estagio.atrasados, estagio.hoje),
                     style = MaterialTheme.typography.bodySmall,
                     color = esquema.onSurfaceVariant,
                 )
@@ -281,8 +287,9 @@ private fun LinhaEstagio(
 
 @Composable
 private fun DetalheEstagio(estagio: EstagioRoda) {
+    val textos = recursosLocalizados()
     val esquema = MaterialTheme.colorScheme
-    val rotulo = if (estagio.intervaloDias == 1) "1 dia" else "${estagio.intervaloDias} dias"
+    val rotulo = if (estagio.intervaloDias == 1) textos.getString(R.string.label_1_day) else textos.getString(R.string.days_format, estagio.intervaloDias)
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier
@@ -291,13 +298,13 @@ private fun DetalheEstagio(estagio: EstagioRoda) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
-                text = "Assuntos em $rotulo",
+                text = textos.getString(R.string.topics_at_format, rotulo),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
             )
             if (estagio.assuntos.isEmpty()) {
                 Text(
-                    text = "Nenhum assunto neste estágio.",
+                    text = textos.getString(R.string.no_topics_at_this_stage),
                     style = MaterialTheme.typography.bodyMedium,
                     color = esquema.onSurfaceVariant,
                 )
@@ -337,14 +344,15 @@ private fun ListaAssuntoRoda(assunto: AssuntoRoda, esquema: ColorScheme) {
 
 @Composable
 private fun SituacaoRevisao(assunto: AssuntoRoda) {
+    val textos = recursosLocalizados()
     val esquema = MaterialTheme.colorScheme
     val (rotulo, container, conteudo) = when (assunto.situacao) {
-        SituacaoRevisao.ATRASADO -> Triple("Atrasada", esquema.errorContainer, esquema.onErrorContainer)
-        SituacaoRevisao.HOJE -> Triple("Vence hoje", esquema.tertiaryContainer, esquema.onTertiaryContainer)
+        SituacaoRevisao.ATRASADO -> Triple(textos.getString(R.string.overdue_3), esquema.errorContainer, esquema.onErrorContainer)
+        SituacaoRevisao.HOJE -> Triple(textos.getString(R.string.due_today), esquema.tertiaryContainer, esquema.onTertiaryContainer)
         SituacaoRevisao.FUTURO -> {
             val texto = assunto.proximaRevisao
-                ?.let { "Vence ${formatarData(it)}" }
-                ?: "Inicial"
+                ?.let { textos.getString(R.string.due_format, formatarData(it)) }
+                ?: textos.getString(R.string.initial)
             Triple(texto, esquema.secondaryContainer, esquema.onSecondaryContainer)
         }
     }

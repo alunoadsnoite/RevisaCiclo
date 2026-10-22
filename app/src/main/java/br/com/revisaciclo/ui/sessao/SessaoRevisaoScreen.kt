@@ -2,6 +2,10 @@
 
 package br.com.revisaciclo.ui.sessao
 
+import br.com.revisaciclo.ui.common.localizarMensagem
+import br.com.revisaciclo.R
+import br.com.revisaciclo.ui.common.recursosLocalizados
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,6 +56,7 @@ fun SessaoRevisaoScreen(
     viewModel: SessaoRevisaoViewModel =
         viewModel(factory = SessaoRevisaoViewModel.factory()),
 ) {
+    val textos = recursosLocalizados()
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
 
     LifecycleResumeEffect(Unit) {
@@ -62,10 +67,10 @@ fun SessaoRevisaoScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Sessão de revisão") },
+                title = { Text(text = textos.getString(R.string.review_session)) },
                 navigationIcon = {
                     IconButton(onClick = onSair) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Sair")
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = textos.getString(R.string.exit))
                     }
                 },
             )
@@ -89,7 +94,7 @@ fun SessaoRevisaoScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text(
-                            text = "Nenhuma revisão devida agora.",
+                            text = textos.getString(R.string.no_reviews_due_right_now),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center,
@@ -117,8 +122,9 @@ fun SessaoRevisaoScreen(
 
 @Composable
 private fun FilledTonalVoltar(onSair: () -> Unit) {
+    val textos = recursosLocalizados()
     TextButton(onClick = onSair) {
-        Text(text = "Voltar")
+        Text(text = textos.getString(R.string.back))
     }
 }
 
@@ -128,6 +134,7 @@ private fun ItemAtual(
     atual: RevisaoPendente,
     onAvaliar: (AvaliacaoRevisao) -> Unit,
 ) {
+    val textos = recursosLocalizados()
     val sessao = estado.sessao
     Column(
         modifier = Modifier
@@ -135,7 +142,7 @@ private fun ItemAtual(
             .padding(16.dp),
     ) {
         Text(
-            text = "Revisão ${sessao?.concluidas?.plus(1) ?: 1} de ${sessao?.total ?: 0}",
+            text = textos.getString(R.string.review_of_format, sessao?.concluidas?.plus(1) ?: 1, sessao?.total ?: 0),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -169,7 +176,7 @@ private fun ItemAtual(
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "${atual.disciplinaNome} · ciclo ${atual.indiceCiclo} · vence ${formatarData(atual.agendadaPara)}",
+                    text = textos.getString(R.string.cycle_due_format, atual.disciplinaNome, atual.indiceCiclo, formatarData(atual.agendadaPara)),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -178,7 +185,7 @@ private fun ItemAtual(
         if (estado.erro != null) {
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = estado.erro,
+                text = textos.localizarMensagem(estado.erro),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.error,
             )
@@ -194,7 +201,7 @@ private fun ItemAtual(
                 CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Salvando avaliação...",
+                    text = textos.getString(R.string.saving_rating),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -208,6 +215,7 @@ private fun ResumoSessao(
     sessao: br.com.revisaciclo.domain.sessao.SessaoDeRevisao,
     onFinalizar: () -> Unit,
 ) {
+    val textos = recursosLocalizados()
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
@@ -222,12 +230,12 @@ private fun ResumoSessao(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Text(
-                        text = "Sessão concluída",
+                        text = textos.getString(R.string.session_complete),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.SemiBold,
                     )
                     Text(
-                        text = "${sessao.concluidas} de ${sessao.total} revisões avaliadas",
+                        text = textos.getString(R.string.of_reviews_rated_format, sessao.concluidas, sessao.total),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -235,7 +243,7 @@ private fun ResumoSessao(
                     sessao.contagemResultados.forEach { (avaliacao, quantidade) ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                text = rotulo(avaliacao),
+                                text = rotulo(avaliacao, textos),
                                 style = MaterialTheme.typography.bodyMedium,
                                 modifier = Modifier.weight(1f),
                             )
@@ -253,15 +261,15 @@ private fun ResumoSessao(
                 onClick = onFinalizar,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(text = "Finalizar")
+                Text(text = textos.getString(R.string.finish))
             }
         }
     }
 }
 
-private fun rotulo(avaliacao: AvaliacaoRevisao): String = when (avaliacao) {
-    AvaliacaoRevisao.ESQUECI -> "Esqueci"
-    AvaliacaoRevisao.DIFICIL -> "Difícil"
-    AvaliacaoRevisao.BOM -> "Bom"
-    AvaliacaoRevisao.FACIL -> "Fácil"
+private fun rotulo(avaliacao: AvaliacaoRevisao, textos: android.content.res.Resources): String = when (avaliacao) {
+    AvaliacaoRevisao.ESQUECI -> textos.getString(R.string.forgot)
+    AvaliacaoRevisao.DIFICIL -> textos.getString(R.string.hard)
+    AvaliacaoRevisao.BOM -> textos.getString(R.string.good)
+    AvaliacaoRevisao.FACIL -> textos.getString(R.string.easy)
 }

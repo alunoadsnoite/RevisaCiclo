@@ -1,5 +1,8 @@
 package br.com.revisaciclo.ui.revisoes
 
+import br.com.revisaciclo.R
+import br.com.revisaciclo.ui.common.recursosLocalizados
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,13 +53,14 @@ fun RevisoesScreen(
     onGerenciarProjetos: () -> Unit = {},
     viewModel: RevisoesViewModel = viewModel(factory = RevisoesViewModel.Factory),
 ) {
+    val textos = recursosLocalizados()
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
     var avaliando by remember { mutableStateOf<RevisaoPendente?>(null) }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = getString(R.string.reviews)) },
+                title = { Text(text = textos.getString(R.string.reviews)) },
                 actions = { SeletorProjetoAtivo(onGerenciarProjetos = onGerenciarProjetos) },
             )
         },
@@ -74,13 +78,13 @@ fun RevisoesScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        text = getString(R.string.no_pending_reviews_all_set),
+                        text = textos.getString(R.string.no_pending_reviews_all_caught_up),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     FilledTonalButton(onClick = onIniciarSessao) {
-                        Text(text = getString(R.string.start_session))
+                        Text(text = textos.getString(R.string.start_session))
                     }
                 }
             } else {
@@ -94,13 +98,13 @@ fun RevisoesScreen(
                             onClick = onIniciarSessao,
                             modifier = Modifier.fillMaxWidth(),
                         ) {
-                            Text(text = "Iniciar sessão de revisão")
+                            Text(text = textos.getString(R.string.start_review_session))
                         }
                     }
                     if (estado.atrasadas > 0) {
                         item {
                             Text(
-                                text = "${estado.atrasadas} ${getString(R.string.overdue)} ${getString(R.string.reviews)}",
+                                text = textos.getString(R.string.overdue_reviews_format, estado.atrasadas),
                                 style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.error,
                             )
@@ -134,6 +138,7 @@ private fun ItemRevisaoPendente(
     pendente: RevisaoPendente,
     onAvaliar: () -> Unit,
 ) {
+    val textos = recursosLocalizados()
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier
@@ -154,7 +159,7 @@ private fun ItemRevisaoPendente(
                 )
                 if (pendente.atrasada) {
                     Text(
-                        text = getString(R.string.overdue),
+                        text = textos.getString(R.string.overdue_3),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.error,
                         fontWeight = FontWeight.Bold,
@@ -168,7 +173,7 @@ private fun ItemRevisaoPendente(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(
-                text = "Agendada para ${formatarData(pendente.agendadaPara)} · ciclo ${pendente.indiceCiclo}",
+                text = textos.getString(R.string.scheduled_for_cycle_format, formatarData(pendente.agendadaPara), pendente.indiceCiclo),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -177,7 +182,7 @@ private fun ItemRevisaoPendente(
                 onClick = onAvaliar,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(text = getString(R.string.rate_review))
+                Text(text = textos.getString(R.string.rate_review))
             }
         }
     }
@@ -189,9 +194,10 @@ private fun DialogoAvaliacao(
     onDispensar: () -> Unit,
     onAvaliar: (AvaliacaoRevisao) -> Unit,
 ) {
+    val textos = recursosLocalizados()
     AlertDialog(
         onDismissRequest = onDispensar,
-        title = { Text(text = getString(R.string.how_was_the_review)) },
+        title = { Text(text = textos.getString(R.string.how_did_the_review_go)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
@@ -202,7 +208,7 @@ private fun DialogoAvaliacao(
             }
         },
         confirmButton = {
-            TextButton(onClick = onDispensar) { Text(text = getString(R.string.cancel)) }
+            TextButton(onClick = onDispensar) { Text(text = textos.getString(R.string.cancel)) }
         },
     )
 }

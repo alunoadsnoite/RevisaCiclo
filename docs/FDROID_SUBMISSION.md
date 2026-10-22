@@ -1,5 +1,12 @@
 # Submissão ao F-Droid — RevisaCiclo
 
+## Estado em 22/10/2026
+
+O [MR !51985](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/51985) foi mesclado em 22/10/2026 às 08:36 UTC, para a versão 0.1.3. Merge não confirma disponibilidade no catálogo. A versão 0.1.4 prepara tradução completa em inglês, preserva português como idioma padrão e inclui seleção de idioma nas configurações Android compatíveis. As capturas en-US anteriores ainda mostravam português e devem ser substituídas por renderizações reais em inglês.
+
+## Histórico anterior
+
+
 ## Atualização em 14/10/2026
 
 - MR oficial: https://gitlab.com/fdroid/fdroiddata/-/merge_requests/51985.
