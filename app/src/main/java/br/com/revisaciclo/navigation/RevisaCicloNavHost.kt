@@ -1,5 +1,8 @@
 package br.com.revisaciclo.navigation
 
+import br.com.revisaciclo.R
+import br.com.revisaciclo.ui.common.recursosLocalizados
+
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
@@ -59,6 +62,7 @@ fun RevisaCicloNavHost(
     destinoInicial: String? = null,
     onDestinoConsumido: () -> Unit = {},
 ) {
+    val textos = recursosLocalizados()
     LaunchedEffect(destinoInicial) {
         if (destinoInicial != null) {
             navController.navigate(destinoInicial) { launchSingleTop = true }
@@ -69,11 +73,11 @@ fun RevisaCicloNavHost(
     val backStackEntry by navController.currentBackStackEntryAsState()
     val rotaAtual = backStackEntry?.destination?.route
     val abas = listOf(
-        Aba(Destinos.DASHBOARD, "Início") to Icons.Default.Home,
-        Aba(Destinos.RODA, "Estágios") to Icons.Default.Refresh,
-        Aba(Destinos.DISCIPLINAS, "Disciplinas") to Icons.AutoMirrored.Filled.List,
-        Aba(Destinos.REVISOES, "Revisões") to Icons.Default.CheckCircle,
-        Aba(Destinos.ESTATISTICAS, "Estatísticas") to Icons.Default.Info,
+        Aba(Destinos.DASHBOARD, textos.getString(R.string.home)) to Icons.Default.Home,
+        Aba(Destinos.RODA, textos.getString(R.string.stages)) to Icons.Default.Refresh,
+        Aba(Destinos.DISCIPLINAS, textos.getString(R.string.subjects)) to Icons.AutoMirrored.Filled.List,
+        Aba(Destinos.REVISOES, textos.getString(R.string.reviews)) to Icons.Default.CheckCircle,
+        Aba(Destinos.ESTATISTICAS, textos.getString(R.string.statistics)) to Icons.Default.Info,
     )
     val mostrarBarra = abas.any { it.first.destino == rotaAtual }
     val irParaProjetos = { navController.navigate(Destinos.PROJETOS) { launchSingleTop = true } }

@@ -43,15 +43,13 @@ class NotificadorRevisoes(private val context: Context) {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
 
-        val texto = if (quantidade == 1) {
-            context.getString(R.string.you_have_one_review_today)
-        } else {
-            context.getString(R.string.you_have_reviews_today, quantidade)
-        }
+        val texto = context.resources.getQuantityString(
+            R.plurals.reviews_due_notification, quantidade, quantidade,
+        )
 
         val notificacao = NotificationCompat.Builder(context, CanalNotificacao.ID)
             .setSmallIcon(R.drawable.ic_notificacao)
-            .setContentTitle("Revisões pendentes")
+            .setContentTitle(context.getString(R.string.review_notification_title))
             .setContentText(texto)
             .setStyle(NotificationCompat.BigTextStyle().bigText(texto))
             .setContentIntent(pendente)

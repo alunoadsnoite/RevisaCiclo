@@ -1,5 +1,8 @@
 package br.com.revisaciclo.ui.disciplinas
 
+import br.com.revisaciclo.R
+import br.com.revisaciclo.ui.common.recursosLocalizados
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -64,6 +67,7 @@ fun DisciplinasScreen(
     onGerenciarProjetos: () -> Unit = {},
     viewModel: DisciplinasViewModel = viewModel(factory = DisciplinasViewModel.Factory),
 ) {
+    val textos = recursosLocalizados()
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
     var editando by remember { mutableStateOf<Disciplina?>(null) }
     var exibindoDialogo by remember { mutableStateOf(false) }
@@ -72,7 +76,7 @@ fun DisciplinasScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = getString(R.string.disciplines)) },
+                title = { Text(text = textos.getString(R.string.subjects)) },
                 actions = { SeletorProjetoAtivo(onGerenciarProjetos = onGerenciarProjetos) },
             )
         },
@@ -83,7 +87,7 @@ fun DisciplinasScreen(
                     exibindoDialogo = true
                 },
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = getString(R.string.new_discipline))
+                Icon(imageVector = Icons.Default.Add, contentDescription = textos.getString(R.string.new_subject))
             }
         },
     ) { padding ->
@@ -94,7 +98,7 @@ fun DisciplinasScreen(
         ) {
             if (!estado.carregando && estado.disciplinas.isEmpty()) {
                 Text(
-                    text = getString(R.string.no_disciplines_registered_yet) + "\n" + getString(R.string.tap_plus_to_create_first),
+                    text = textos.getString(R.string.no_subjects_yet_tap_to_create_your_first_one),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
@@ -137,10 +141,10 @@ fun DisciplinasScreen(
     excluindo?.let { disciplina ->
         AlertDialog(
             onDismissRequest = { excluindo = null },
-            title = { Text(text = getString(R.string.delete_discipline)) },
+            title = { Text(text = textos.getString(R.string.delete_subject)) },
             text = {
                 Text(
-                    text = "Excluir \"${disciplina.nome}\" e todos os assuntos e revisões relacionados?",
+                    text = textos.getString(R.string.delete_and_all_related_topics_and_reviews_format, disciplina.nome),
                 )
             },
             confirmButton = {
@@ -150,12 +154,12 @@ fun DisciplinasScreen(
                         excluindo = null
                     },
                 ) {
-                    Text(text = getString(R.string.delete))
+                    Text(text = textos.getString(R.string.delete))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { excluindo = null }) {
-                    Text(text = getString(R.string.cancel))
+                    Text(text = textos.getString(R.string.cancel))
                 }
             },
         )
@@ -170,6 +174,7 @@ private fun ItemDisciplina(
     onEditar: () -> Unit,
     onExcluir: () -> Unit,
 ) {
+    val textos = recursosLocalizados()
     var menuAberto by remember { mutableStateOf(false) }
 
     Card(
@@ -196,11 +201,11 @@ private fun ItemDisciplina(
             )
             Box {
                 IconButton(onClick = { menuAberto = true }) {
-                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Opções")
+                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = textos.getString(R.string.options))
                 }
                 DropdownMenu(expanded = menuAberto, onDismissRequest = { menuAberto = false }) {
                     DropdownMenuItem(
-                        text = { Text(text = getString(R.string.edit)) },
+                        text = { Text(text = textos.getString(R.string.edit)) },
                         leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                         onClick = {
                             menuAberto = false
@@ -208,7 +213,7 @@ private fun ItemDisciplina(
                         },
                     )
                     DropdownMenuItem(
-                        text = { Text(text = getString(R.string.delete)) },
+                        text = { Text(text = textos.getString(R.string.delete)) },
                         leadingIcon = { Icon(Icons.Default.Delete, contentDescription = null) },
                         onClick = {
                             menuAberto = false
@@ -227,23 +232,24 @@ private fun DialogoDisciplina(
     onDispensar: () -> Unit,
     onSalvar: (String, Long) -> Unit,
 ) {
+    val textos = recursosLocalizados()
     var nome by remember { mutableStateOf(disciplina?.nome.orEmpty()) }
     var cor by remember { mutableLongStateOf(disciplina?.cor ?: CORES_DISCIPLINA.first()) }
 
     AlertDialog(
         onDismissRequest = onDispensar,
-        title = { Text(text = if (disciplina == null) getString(R.string.new_discipline) else getString(R.string.edit_discipline)) },
+        title = { Text(text = if (disciplina == null) textos.getString(R.string.new_subject) else textos.getString(R.string.edit_subject)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 OutlinedTextField(
                     value = nome,
                     onValueChange = { nome = it },
-                    label = { Text(text = getString(R.string.name)) },
+                    label = { Text(text = textos.getString(R.string.name)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Text(
-                    text = getString(R.string.color),
+                    text = textos.getString(R.string.color),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.SemiBold,
                 )
@@ -251,10 +257,10 @@ private fun DialogoDisciplina(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onSalvar(nome, cor) }) { Text(text = getString(R.string.save)) }
+            TextButton(onClick = { onSalvar(nome, cor) }) { Text(text = textos.getString(R.string.save)) }
         },
         dismissButton = {
-            TextButton(onClick = onDispensar) { Text(text = getString(R.string.cancel)) }
+            TextButton(onClick = onDispensar) { Text(text = textos.getString(R.string.cancel)) }
         },
     )
 }

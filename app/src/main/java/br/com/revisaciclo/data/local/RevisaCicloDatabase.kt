@@ -1,6 +1,7 @@
 package br.com.revisaciclo.data.local
 
 import android.content.Context
+import br.com.revisaciclo.R
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -155,14 +156,15 @@ abstract class RevisaCicloDatabase : RoomDatabase() {
             }
         }
 
-        private val CALLBACK_CRIAR_PROJETO_PADRAO = object : RoomDatabase.Callback() {
+        private fun callbackCriarProjetoPadrao(context: Context) = object : RoomDatabase.Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
                 db.execSQL(
                     """
                     INSERT OR IGNORE INTO `projetos_estudo` (`id`, `nome`, `descricao`, `cor`, `criadoEm`, `arquivado`)
-                    VALUES ($ID_PROJETO_PADRAO, '$NOME_PROJETO_PADRAO', NULL, $COR_PROJETO_PADRAO, ${System.currentTimeMillis()}, 0)
+                    VALUES ($ID_PROJETO_PADRAO, ?, NULL, $COR_PROJETO_PADRAO, ${System.currentTimeMillis()}, 0)
                     """.trimIndent(),
+                    arrayOf(context.getString(R.string.default_project_name)),
                 )
             }
         }
@@ -178,7 +180,7 @@ abstract class RevisaCicloDatabase : RoomDatabase() {
                     NOME_BANCO,
                 )
                     .addMigrations(MIGRACAO_1_2, MIGRACAO_2_3)
-                    .addCallback(CALLBACK_CRIAR_PROJETO_PADRAO)
+                    .addCallback(callbackCriarProjetoPadrao(context.applicationContext))
                     .build()
                     .also { instancia = it }
             }

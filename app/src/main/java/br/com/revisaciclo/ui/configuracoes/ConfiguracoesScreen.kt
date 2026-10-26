@@ -1,5 +1,9 @@
 package br.com.revisaciclo.ui.configuracoes
 
+import br.com.revisaciclo.ui.common.localizarMensagem
+import br.com.revisaciclo.R
+import br.com.revisaciclo.ui.common.recursosLocalizados
+
 import android.Manifest
 import android.content.Context
 import android.content.Intent
@@ -77,6 +81,7 @@ fun ConfiguracoesScreen(
     viewModel: ConfiguracoesViewModel = viewModel(factory = ConfiguracoesViewModel.Factory),
     backupViewModel: BackupViewModel = viewModel(factory = BackupViewModel.Factory),
 ) {
+    val textos = recursosLocalizados()
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
     val estadoBackup by backupViewModel.uiState.collectAsStateWithLifecycle()
     val contexto = LocalContext.current
@@ -106,7 +111,7 @@ fun ConfiguracoesScreen(
     val mensagemBackup = estadoBackup.mensagem
     LaunchedEffect(mensagemBackup) {
         if (mensagemBackup != null) {
-            snackbarHostState.showSnackbar(mensagemBackup)
+            snackbarHostState.showSnackbar(textos.localizarMensagem(mensagemBackup))
             backupViewModel.limparMensagem()
         }
     }
@@ -119,7 +124,7 @@ fun ConfiguracoesScreen(
                 putExtra(Intent.EXTRA_STREAM, compartilharUri.toUri())
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
-            contexto.startActivity(Intent.createChooser(intent, "Compartilhar backup"))
+            contexto.startActivity(Intent.createChooser(intent, textos.getString(R.string.share_backup)))
             backupViewModel.consumirCompartilhamento()
         }
     }
@@ -127,12 +132,12 @@ fun ConfiguracoesScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = getString(R.string.settings)) },
+                title = { Text(text = textos.getString(R.string.settings)) },
                 navigationIcon = {
                     IconButton(onClick = onVoltar) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = getString(R.string.back),
+                            contentDescription = textos.getString(R.string.back),
                         )
                     }
                 },
@@ -244,8 +249,8 @@ fun ConfiguracoesScreen(
         AlertDialog(
             onDismissRequest = {},
             confirmButton = {},
-            title = { Text(text = getString(R.string.reading_backup)) },
-            text = { Text(text = getString(R.string.verifying_file_integrity)) },
+            title = { Text(text = textos.getString(R.string.reading_backup)) },
+            text = { Text(text = textos.getString(R.string.checking_file_integrity)) },
         )
     }
 
@@ -253,8 +258,8 @@ fun ConfiguracoesScreen(
         AlertDialog(
             onDismissRequest = {},
             confirmButton = {},
-            title = { Text(text = getString(R.string.restoring)) },
-            text = { Text(text = getString(R.string.replacing_data_dont_close_app)) },
+            title = { Text(text = textos.getString(R.string.restoring)) },
+            text = { Text(text = textos.getString(R.string.replacing_data_keep_the_app_open)) },
         )
     }
 }
@@ -278,13 +283,13 @@ private fun SecaoBackup(
     onCompartilhar: () -> Unit,
     onRestaurar: () -> Unit,
 ) {
+    val textos = recursosLocalizados()
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-            Text(text = getString(R.string.backup_and_data), style = MaterialTheme.typography.titleMedium)
+            Text(text = textos.getString(R.string.backup_and_data), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Crie um backup completo para guardar ou transferir seus dados. " +
-                    "A restauração substitui todos os dados atuais do aplicativo.",
+                text = textos.getString(R.string.create_a_full_backup_to_save_or_transfer_your_data_restoring_repl),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -298,14 +303,14 @@ private fun SecaoBackup(
                     enabled = !ocupado,
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text(text = getString(R.string.export))
+                    Text(text = textos.getString(R.string.export))
                 }
                 OutlinedButton(
                     onClick = onRestaurar,
                     enabled = !ocupado,
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text(text = getString(R.string.restore))
+                    Text(text = textos.getString(R.string.restore))
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -319,7 +324,7 @@ private fun SecaoBackup(
                     contentDescription = null,
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = getString(R.string.share_backup))
+                Text(text = textos.getString(R.string.share_backup))
             }
         }
     }
@@ -331,35 +336,35 @@ private fun DialogoExportar(
     onJson: () -> Unit,
     onDispensar: () -> Unit,
 ) {
+    val textos = recursosLocalizados()
     AlertDialog(
         onDismissRequest = onDispensar,
-        title = { Text(text = getString(R.string.export_data)) },
+        title = { Text(text = textos.getString(R.string.export_data)) },
         text = {
             Column {
                 Text(
-                    text = getString(R.string.choose_export_format),
+                    text = textos.getString(R.string.choose_the_export_format),
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = getString(R.string.full_backup_revisar),
+                    text = textos.getString(R.string.full_backup_revisaciclo_can_be_restored_by_the_app),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Portable JSON (.json): open format for reading in other " +
-                        "tools.",
+                    text = textos.getString(R.string.portable_json_json_open_format_for_use_in_other_tools),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         },
         confirmButton = {
-            TextButton(onClick = onBackup) { Text(text = getString(R.string.backup_and_data)) }
+            TextButton(onClick = onBackup) { Text(text = textos.getString(R.string.full_backup)) }
         },
         dismissButton = {
-            TextButton(onClick = onJson) { Text(text = getString(R.string.backup_and_data)) }
+            TextButton(onClick = onJson) { Text(text = textos.getString(R.string.portable_json)) }
         },
     )
 }
@@ -371,48 +376,51 @@ private fun DialogoConfirmarRestauracao(
     onConfirmar: () -> Unit,
     onCancelar: () -> Unit,
 ) {
+    val textos = recursosLocalizados()
     val data = remember(resumo.criadoEm) {
         java.time.format.DateTimeFormatter
-            .ofPattern("dd/MM/yyyy HH:mm")
+            .ofPattern(if (java.util.Locale.getDefault().language == "en" && java.util.Locale.getDefault().country == "US") "MM/dd/yyyy HH:mm" else "dd/MM/yyyy HH:mm")
             .withZone(java.time.ZoneId.systemDefault())
             .format(resumo.criadoEm)
     }
     AlertDialog(
         onDismissRequest = { if (!restaurando) onCancelar() },
-        title = { Text(text = getString(R.string.restore)) },
+        title = { Text(text = textos.getString(R.string.restore_backup)) },
         text = {
-            Text(
-                text = getString(R.string.restore_confirm_message),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.error,
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(text = "Criado em: $data", style = MaterialTheme.typography.bodyMedium)
-            Text(
-                text = "Projetos: ${resumo.projetos}",
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            Text(
-                text = "Disciplinas: ${resumo.disciplinas}",
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            Text(
-                text = "Assuntos: ${resumo.assuntos}",
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            Text(
-                text = "Revisões: ${resumo.revisoes}",
-                style = MaterialTheme.typography.bodyMedium,
-            )
+            Column {
+                Text(
+                    text = textos.getString(R.string.this_replaces_all_current_data_with_the_file_contents_a_safety_co),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(text = textos.getString(R.string.created_on_format, data), style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    text = textos.getString(R.string.projects_format, resumo.projetos),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Text(
+                    text = textos.getString(R.string.subjects_format, resumo.disciplinas),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Text(
+                    text = textos.getString(R.string.topics_format, resumo.assuntos),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Text(
+                    text = textos.getString(R.string.reviews_format, resumo.revisoes),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
         },
         confirmButton = {
             TextButton(onClick = onConfirmar, enabled = !restaurando) {
-                Text(text = getString(R.string.restore))
+                Text(text = textos.getString(R.string.restore))
             }
         },
         dismissButton = {
             TextButton(onClick = onCancelar, enabled = !restaurando) {
-                Text(text = getString(R.string.cancel))
+                Text(text = textos.getString(R.string.cancel))
             }
         },
     )
@@ -424,10 +432,11 @@ private fun SecaoNotificacoes(
     onAtivar: (Boolean) -> Unit,
     onEscolherHorario: () -> Unit,
 ) {
+    val textos = recursosLocalizados()
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
             Text(
-                text = getString(R.string.settings),
+                text = textos.getString(R.string.notifications),
                 style = MaterialTheme.typography.titleMedium,
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -436,9 +445,9 @@ private fun SecaoNotificacoes(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(text = getString(R.string.review_reminders), style = MaterialTheme.typography.bodyLarge)
+                    Text(text = textos.getString(R.string.review_reminders), style = MaterialTheme.typography.bodyLarge)
                     Text(
-                        text = getString(R.string.notifications_about_pending_reviews),
+                        text = textos.getString(R.string.notifies_you_when_reviews_are_due_today),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -447,7 +456,7 @@ private fun SecaoNotificacoes(
                     checked = preferencias.notificacoesAtivas,
                     onCheckedChange = onAtivar,
                     modifier = Modifier.semantics {
-                        contentDescription = getString(R.string.review_reminders)
+                        contentDescription = textos.getString(R.string.review_reminders)
                     },
                 )
             }
@@ -457,7 +466,7 @@ private fun SecaoNotificacoes(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(text = getString(R.string.preferred_time), style = MaterialTheme.typography.bodyLarge)
+                    Text(text = textos.getString(R.string.preferred_time), style = MaterialTheme.typography.bodyLarge)
                     Text(
                         text = formatarHorario(preferencias.horarioNotificacao),
                         style = MaterialTheme.typography.bodyMedium,
@@ -465,13 +474,12 @@ private fun SecaoNotificacoes(
                     )
                 }
                 OutlinedButton(onClick = onEscolherHorario) {
-                    Text(text = getString(R.string.change))
+                    Text(text = textos.getString(R.string.change))
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "O Android pode atrasar lembretes para economizar bateria (Doze). " +
-                    "Não garantimos o horário exato.",
+                text = textos.getString(R.string.android_may_delay_reminders_to_save_battery_doze_the_exact_time_i),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -484,18 +492,19 @@ private fun SecaoMetaDiaria(
     metaDiaria: Int,
     onAlterar: (Int) -> Unit,
 ) {
+    val textos = recursosLocalizados()
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-            Text(text = "Meta diária", style = MaterialTheme.typography.titleMedium)
+            Text(text = textos.getString(R.string.daily_goal), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = getString(R.string.revisions_pretend),
+                text = textos.getString(R.string.reviews_you_aim_to_complete_each_day),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = getString(R.string.meta_value, metaDiaria),
+                text = textos.getString(R.string.reviews_format_2, metaDiaria),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
             )
@@ -516,14 +525,15 @@ private fun SecaoTema(
     tema: TemaApp,
     onSelecionar: (TemaApp) -> Unit,
 ) {
+    val textos = recursosLocalizados()
     val opcoes = listOf(
-        TemaApp.CLARO to getString(R.string.theme_claro),
-        TemaApp.ESCURO to getString(R.string.theme_escuro),
-        TemaApp.AUTOMATICO to getString(R.string.theme_automatico),
+        TemaApp.CLARO to textos.getString(R.string.light),
+        TemaApp.ESCURO to textos.getString(R.string.dark),
+        TemaApp.AUTOMATICO to textos.getString(R.string.system_default),
     )
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-            Text(text = "Tema", style = MaterialTheme.typography.titleMedium)
+            Text(text = textos.getString(R.string.theme), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(12.dp))
             SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
                 opcoes.forEachIndexed { indice, (valor, rotulo) ->
@@ -545,25 +555,24 @@ private fun SecaoIntervalos(
     intervalos: List<Int>,
     onEditar: () -> Unit,
 ) {
+    val textos = recursosLocalizados()
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-            Text(text = getString(R.string.cycle_intervals), style = MaterialTheme.typography.titleMedium)
+            Text(text = textos.getString(R.string.review_intervals), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = getString(R.string.intervals_between_reviews, ValidadorIntervalos.formatar(intervalos)),
+                text = textos.getString(R.string.days_between_reviews_format, ValidadorIntervalos.formatar(intervalos)),
                 style = MaterialTheme.typography.bodyLarge,
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Após o último estágio, as revisões continuam no último intervalo. " +
-                    "Alterar os intervalos não muda revisões já agendadas; vale para os " +
-                    "próximos agendamentos e novos assuntos.",
+                text = textos.getString(R.string.after_the_final_stage_reviews_keep_using_the_last_interval_changi),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(modifier = Modifier.height(12.dp))
             OutlinedButton(onClick = onEditar) {
-                Text(text = getString(R.string.edit_intervals))
+                Text(text = textos.getString(R.string.edit_intervals))
             }
         }
     }
@@ -571,19 +580,20 @@ private fun SecaoIntervalos(
 
 @Composable
 private fun SecaoSobre(versao: String) {
+    val textos = recursosLocalizados()
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-            Text(text = getString(R.string.about), style = MaterialTheme.typography.titleMedium)
+            Text(text = textos.getString(R.string.about), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = getString(R.string.app_name), style = MaterialTheme.typography.bodyLarge)
+            Text(text = "RevisaCiclo", style = MaterialTheme.typography.bodyLarge)
             Text(
-                text = getString(R.string.version, versao),
+                text = textos.getString(R.string.version_format, versao),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = getString(R.string.offline_note),
+                text = textos.getString(R.string.offline_spaced_repetition_your_data_stays_on_your_device),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -598,6 +608,7 @@ private fun DialogoHorario(
     onConfirmar: (Int, Int) -> Unit,
     onDispensar: () -> Unit,
 ) {
+    val textos = recursosLocalizados()
     val estado = rememberTimePickerState(
         initialHour = horario.hour,
         initialMinute = horario.minute,
@@ -605,15 +616,15 @@ private fun DialogoHorario(
     )
     AlertDialog(
         onDismissRequest = onDispensar,
-        title = { Text(text = "Horário preferido") },
+        title = { Text(text = textos.getString(R.string.preferred_time)) },
         text = { TimePicker(state = estado) },
         confirmButton = {
             TextButton(onClick = { onConfirmar(estado.hour, estado.minute) }) {
-                Text(text = "Salvar")
+                Text(text = textos.getString(R.string.save))
             }
         },
         dismissButton = {
-            TextButton(onClick = onDispensar) { Text(text = "Cancelar") }
+            TextButton(onClick = onDispensar) { Text(text = textos.getString(R.string.cancel)) }
         },
     )
 }
@@ -625,6 +636,7 @@ private fun DialogoIntervalos(
     onRestaurar: () -> Unit,
     onDispensar: () -> Unit,
 ) {
+    val textos = recursosLocalizados()
     var texto by remember(intervalosAtuais) {
         mutableStateOf(ValidadorIntervalos.formatar(intervalosAtuais))
     }
@@ -634,12 +646,11 @@ private fun DialogoIntervalos(
 
     AlertDialog(
         onDismissRequest = onDispensar,
-        title = { Text(text = "Intervalos do ciclo") },
+        title = { Text(text = textos.getString(R.string.review_intervals)) },
         text = {
             Column {
                 Text(
-                    text = "Informe os dias entre revisões, separados por vírgula. " +
-                        "Precisam ser positivos e estritamente crescentes.",
+                    text = textos.getString(R.string.enter_the_days_between_reviews_separated_by_commas_values_must_be),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -649,13 +660,13 @@ private fun DialogoIntervalos(
                     onValueChange = { texto = it },
                     singleLine = true,
                     isError = erro != null,
-                    label = { Text(text = "Ex.: 1, 3, 7, 15, 30") },
+                    label = { Text(text = textos.getString(R.string.e_g_1_3_7_15_30)) },
                     modifier = Modifier.fillMaxWidth(),
                 )
                 if (erro != null) {
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = erro,
+                        text = textos.localizarMensagem(erro),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                     )
@@ -663,10 +674,10 @@ private fun DialogoIntervalos(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onSalvar(texto) }) { Text(text = "Salvar") }
+            TextButton(onClick = { onSalvar(texto) }) { Text(text = textos.getString(R.string.save)) }
         },
         dismissButton = {
-            TextButton(onClick = onRestaurar) { Text(text = "Restaurar padrão") }
+            TextButton(onClick = onRestaurar) { Text(text = textos.getString(R.string.reset_to_default)) }
         },
     )
 }

@@ -3,3 +3,5 @@ RevisaCiclo organiza seus estudos em projetos, disciplinas e assuntos e agenda r
 Acompanhe o progresso na roda de estágios, realize sessões de revisão e consulte estatísticas e sua meta diária. Receba lembretes locais e exporte ou restaure seus dados com backup completo.
 
 Funciona offline, sem anúncios, rastreamento ou necessidade de conta.
+
+Interface disponível em português e inglês.

@@ -1,5 +1,8 @@
 package br.com.revisaciclo.ui.assuntos
 
+import br.com.revisaciclo.R
+import br.com.revisaciclo.ui.common.recursosLocalizados
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -63,6 +66,7 @@ fun AssuntosScreen(
     onVoltar: () -> Unit,
     viewModel: AssuntosViewModel = viewModel(factory = AssuntosViewModel.factory(disciplinaId)),
 ) {
+    val textos = recursosLocalizados()
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
     var editando by remember { mutableStateOf<Assunto?>(null) }
     var exibindoDialogo by remember { mutableStateOf(false) }
@@ -71,12 +75,12 @@ fun AssuntosScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = estado.disciplina?.nome ?: getString(R.string.subjects)) },
+                title = { Text(text = estado.disciplina?.nome ?: textos.getString(R.string.topics)) },
                 navigationIcon = {
                     IconButton(onClick = onVoltar) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = getString(R.string.back),
+                            contentDescription = textos.getString(R.string.back),
                         )
                     }
                 },
@@ -89,7 +93,7 @@ fun AssuntosScreen(
                     exibindoDialogo = true
                 },
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = getString(R.string.new_subject))
+                Icon(imageVector = Icons.Default.Add, contentDescription = textos.getString(R.string.new_topic))
             }
         },
     ) { padding ->
@@ -100,7 +104,7 @@ fun AssuntosScreen(
         ) {
             if (!estado.carregando && estado.assuntos.isEmpty()) {
                 Text(
-                    text = getString(R.string.no_subjects_registered_yet) + "\n" + getString(R.string.tap_plus_to_add),
+                    text = textos.getString(R.string.no_topics_yet_tap_to_add_one),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
@@ -143,8 +147,8 @@ fun AssuntosScreen(
     excluindo?.let { assunto ->
         AlertDialog(
             onDismissRequest = { excluindo = null },
-            title = { Text(text = getString(R.string.delete_subject)) },
-            text = { Text(text = "Excluir \"${assunto.titulo}\" e suas revisões?") },
+            title = { Text(text = textos.getString(R.string.delete_topic)) },
+            text = { Text(text = textos.getString(R.string.delete_and_its_reviews_format, assunto.titulo)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -152,12 +156,12 @@ fun AssuntosScreen(
                         excluindo = null
                     },
                 ) {
-                    Text(text = getString(R.string.delete))
+                    Text(text = textos.getString(R.string.delete))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { excluindo = null }) {
-                    Text(text = getString(R.string.cancel))
+                    Text(text = textos.getString(R.string.cancel))
                 }
             },
         )
@@ -170,6 +174,7 @@ private fun ItemAssunto(
     onEditar: () -> Unit,
     onExcluir: () -> Unit,
 ) {
+    val textos = recursosLocalizados()
     var menuAberto by remember { mutableStateOf(false) }
 
     Card(modifier = Modifier.fillMaxWidth()) {
@@ -187,11 +192,11 @@ private fun ItemAssunto(
                 EtiquetaEstado(assunto.estadoRevisao)
                 Box {
                     IconButton(onClick = { menuAberto = true }) {
-                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Opções")
+                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = textos.getString(R.string.options))
                     }
                     DropdownMenu(expanded = menuAberto, onDismissRequest = { menuAberto = false }) {
                         DropdownMenuItem(
-                            text = { Text(text = getString(R.string.edit)) },
+                            text = { Text(text = textos.getString(R.string.edit)) },
                             leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                             onClick = {
                                 menuAberto = false
@@ -199,7 +204,7 @@ private fun ItemAssunto(
                             },
                         )
                         DropdownMenuItem(
-                            text = { Text(text = getString(R.string.delete)) },
+                            text = { Text(text = textos.getString(R.string.delete)) },
                             leadingIcon = { Icon(Icons.Default.Delete, contentDescription = null) },
                             onClick = {
                                 menuAberto = false
@@ -221,13 +226,13 @@ private fun ItemAssunto(
 
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Estudado em ${formatarData(assunto.dataEstudo)}",
+                text = textos.getString(R.string.studied_on_format, formatarData(assunto.dataEstudo)),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             assunto.proximaRevisao?.let { proxima ->
                 Text(
-                    text = "Próxima revisão: ${formatarData(proxima)} (ciclo ${assunto.indiceCiclo})",
+                    text = textos.getString(R.string.next_review_cycle_format, formatarData(proxima), assunto.indiceCiclo),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -238,10 +243,11 @@ private fun ItemAssunto(
 
 @Composable
 private fun EtiquetaEstado(estado: EstadoRevisao) {
+    val textos = recursosLocalizados()
     val (texto, cor) = when (estado) {
-        EstadoRevisao.NOVO -> getString(R.string.button_new) to MaterialTheme.colorScheme.secondaryContainer
-        EstadoRevisao.EM_DIA -> getString(R.string.up_to_date) to MaterialTheme.colorScheme.primaryContainer
-        EstadoRevisao.ATRASADO -> getString(R.string.overdue) to MaterialTheme.colorScheme.errorContainer
+        EstadoRevisao.NOVO -> textos.getString(R.string.new_topic_status) to MaterialTheme.colorScheme.secondaryContainer
+        EstadoRevisao.EM_DIA -> textos.getString(R.string.up_to_date) to MaterialTheme.colorScheme.primaryContainer
+        EstadoRevisao.ATRASADO -> textos.getString(R.string.overdue) to MaterialTheme.colorScheme.errorContainer
     }
     Surface(
         color = cor,
@@ -263,6 +269,7 @@ private fun DialogoAssunto(
     onDispensar: () -> Unit,
     onSalvar: (String, String?, LocalDate) -> Unit,
 ) {
+    val textos = recursosLocalizados()
     var titulo by remember { mutableStateOf(assunto?.titulo.orEmpty()) }
     var descricao by remember { mutableStateOf(assunto?.descricao.orEmpty()) }
     var dataEstudo by remember { mutableStateOf(assunto?.dataEstudo ?: dataInicial) }
@@ -270,26 +277,26 @@ private fun DialogoAssunto(
 
     AlertDialog(
         onDismissRequest = onDispensar,
-        title = { Text(text = if (assunto == null) getString(R.string.new_subject) else getString(R.string.edit_subject)) },
+        title = { Text(text = if (assunto == null) textos.getString(R.string.new_topic) else textos.getString(R.string.edit_topic)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
                     value = titulo,
                     onValueChange = { titulo = it },
-                    label = { Text(text = getString(R.string.title)) },
+                    label = { Text(text = textos.getString(R.string.title)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 OutlinedTextField(
                     value = descricao,
                     onValueChange = { descricao = it },
-                    label = { Text(text = getString(R.string.description_optional)) },
+                    label = { Text(text = textos.getString(R.string.description_optional)) },
                     minLines = 2,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Column {
                     Text(
-                        text = getString(R.string.study_date),
+                        text = textos.getString(R.string.study_date),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -307,11 +314,11 @@ private fun DialogoAssunto(
         },
         confirmButton = {
             TextButton(onClick = { onSalvar(titulo, descricao.ifBlank { null }, dataEstudo) }) {
-                Text(text = getString(R.string.save))
+                Text(text = textos.getString(R.string.save))
             }
         },
         dismissButton = {
-            TextButton(onClick = onDispensar) { Text(text = getString(R.string.cancel)) }
+            TextButton(onClick = onDispensar) { Text(text = textos.getString(R.string.cancel)) }
         },
     )
 

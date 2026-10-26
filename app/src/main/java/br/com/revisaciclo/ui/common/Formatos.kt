@@ -4,10 +4,10 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-private val FORMATO_DATA: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.forLanguageTag("pt-BR"))
-
-fun formatarData(data: LocalDate): String = data.format(FORMATO_DATA)
+fun formatarData(data: LocalDate, locale: Locale = Locale.getDefault()): String {
+    val pattern = if (locale.language == "en" && locale.country == "US") "MM/dd/yyyy" else "dd/MM/yyyy"
+    return data.format(DateTimeFormatter.ofPattern(pattern, locale))
+}
 
 val CORES_DISCIPLINA: List<Long> = listOf(
     0xFF1565C0L,

@@ -2,6 +2,9 @@
 
 package br.com.revisaciclo.ui.estatisticas
 
+import br.com.revisaciclo.R
+import br.com.revisaciclo.ui.common.recursosLocalizados
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,6 +51,7 @@ fun EstatisticasScreen(
     onGerenciarProjetos: () -> Unit = {},
     viewModel: EstatisticasViewModel = viewModel(factory = EstatisticasViewModel.Factory),
 ) {
+    val textos = recursosLocalizados()
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
 
     LifecycleResumeEffect(Unit) {
@@ -58,7 +62,7 @@ fun EstatisticasScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = getString(R.string.statistics)) },
+                title = { Text(text = textos.getString(R.string.statistics)) },
                 actions = { SeletorProjetoAtivo(onGerenciarProjetos = onGerenciarProjetos) },
             )
         },
@@ -84,12 +88,12 @@ fun EstatisticasScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Secao(
-                    titulo = "Projeto ativo",
+                    titulo = textos.getString(R.string.active_project),
                     estatisticas = estatisticas,
                     comRotulos = true,
                 )
                 Secao(
-                    titulo = "Totais globais (todos os projetos)",
+                    titulo = textos.getString(R.string.global_totals_all_projects),
                     estatisticas = globais,
                     comRotulos = false,
                 )
@@ -104,6 +108,7 @@ private fun Secao(
     estatisticas: br.com.revisaciclo.domain.model.EstatisticaRevisao,
     comRotulos: Boolean,
 ) {
+    val textos = recursosLocalizados()
     Text(
         text = titulo,
         style = MaterialTheme.typography.titleMedium,
@@ -111,12 +116,12 @@ private fun Secao(
     )
     CartaoResumo(estatisticas = estatisticas)
     CartaoEvolucao(
-        titulo = "Últimos 7 dias",
+        titulo = textos.getString(R.string.last_7_days),
         contagens = estatisticas.evolucao7Dias,
         comRotulos = comRotulos,
     )
     CartaoEvolucao(
-        titulo = "Últimos 30 dias",
+        titulo = textos.getString(R.string.last_30_days),
         contagens = estatisticas.evolucao30Dias,
         comRotulos = false,
     )
@@ -124,6 +129,7 @@ private fun Secao(
 
 @Composable
 private fun CartaoResumo(estatisticas: br.com.revisaciclo.domain.model.EstatisticaRevisao) {
+    val textos = recursosLocalizados()
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -131,25 +137,25 @@ private fun CartaoResumo(estatisticas: br.com.revisaciclo.domain.model.Estatisti
         ) {
             Indicador(
                 valor = estatisticas.concluidas,
-                rotulo = getString(R.string.completed),
+                rotulo = textos.getString(R.string.completed),
                 cor = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.weight(1f),
             )
             Indicador(
                 valor = estatisticas.pendentes,
-                rotulo = getString(R.string.pending),
+                rotulo = textos.getString(R.string.pending),
                 cor = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier.weight(1f),
             )
             Indicador(
                 valor = estatisticas.atrasadas,
-                rotulo = getString(R.string.overdue),
+                rotulo = textos.getString(R.string.overdue_2),
                 cor = MaterialTheme.colorScheme.error,
                 modifier = Modifier.weight(1f),
             )
         }
         Text(
-            text = "${estatisticas.totalRevisoes} ${getString(R.string.review)} ${getString(R.string.total_reviews_recorded)}",
+            text = textos.getString(R.string.total_reviews_recorded_format, estatisticas.totalRevisoes),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -190,12 +196,13 @@ private fun CartaoEvolucao(
     contagens: List<ContagemDiaria>,
     comRotulos: Boolean,
 ) {
+    val textos = recursosLocalizados()
     val esquema = MaterialTheme.colorScheme
-    val descricaoAcessivel = remember(contagens) {
+    val descricaoAcessivel = remember(contagens, textos) {
         buildString {
-            append("Evolução diária de revisões concluídas. ")
+            append(textos.getString(R.string.daily_completed_reviews)).append(' ')
             contagens.forEachIndexed { indice, conta ->
-                append("${conta.data.dayOfMonth}/${conta.data.monthValue}: ${conta.quantidade}")
+                append("${br.com.revisaciclo.ui.common.formatarData(conta.data)}: ${conta.quantidade}")
                 if (indice < contagens.lastIndex) append(". ")
             }
             append(".")
@@ -255,7 +262,7 @@ private fun CartaoEvolucao(
 }
 
 private fun rotuloDia(conta: ContagemDiaria): String {
-    val portugues = Locale.forLanguageTag("pt-BR")
+    val portugues = Locale.getDefault()
     val nome = conta.data.dayOfWeek.getDisplayName(TextStyle.SHORT, portugues)
     return nome.lowercase(portugues)
 }

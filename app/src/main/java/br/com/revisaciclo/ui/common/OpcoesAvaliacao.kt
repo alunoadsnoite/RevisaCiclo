@@ -1,5 +1,8 @@
 package br.com.revisaciclo.ui.common
 
+import br.com.revisaciclo.R
+import br.com.revisaciclo.ui.common.recursosLocalizados
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,17 +24,18 @@ fun OpcoesAvaliacao(
     habilitado: Boolean = true,
     onAvaliar: (AvaliacaoRevisao) -> Unit,
 ) {
+    val textos = recursosLocalizados()
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Avaliacao(rotulo = getString(R.string.forgot), descricao = getString(R.string.resets_cycle_to_1_day), habilitado) {
+        Avaliacao(rotulo = textos.getString(R.string.forgot), descricao = textos.getString(R.string.restart_with_a_1_day_interval), habilitado) {
             onAvaliar(AvaliacaoRevisao.ESQUECI)
         }
-        Avaliacao(rotulo = getString(R.string.difficult), descricao = getString(R.string.repeats_current_cycle), habilitado) {
+        Avaliacao(rotulo = textos.getString(R.string.hard), descricao = textos.getString(R.string.repeat_the_current_cycle), habilitado) {
             onAvaliar(AvaliacaoRevisao.DIFICIL)
         }
-        Avaliacao(rotulo = getString(R.string.good), descricao = getString(R.string.advances_one_cycle), habilitado) {
+        Avaliacao(rotulo = textos.getString(R.string.good), descricao = textos.getString(R.string.advance_one_cycle), habilitado) {
             onAvaliar(AvaliacaoRevisao.BOM)
         }
-        Avaliacao(rotulo = getString(R.string.easy), descricao = getString(R.string.advances_two_cycles), habilitado) {
+        Avaliacao(rotulo = textos.getString(R.string.easy), descricao = textos.getString(R.string.advance_two_cycles), habilitado) {
             onAvaliar(AvaliacaoRevisao.FACIL)
         }
     }

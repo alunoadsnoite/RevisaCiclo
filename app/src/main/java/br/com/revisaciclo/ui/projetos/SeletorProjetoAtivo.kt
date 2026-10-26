@@ -1,5 +1,8 @@
 package br.com.revisaciclo.ui.projetos
 
+import br.com.revisaciclo.R
+import br.com.revisaciclo.ui.common.recursosLocalizados
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
@@ -34,6 +37,7 @@ fun SeletorProjetoAtivo(
     modifier: Modifier = Modifier,
     viewModel: ProjetosViewModel = viewModel(factory = ProjetosViewModel.Factory),
 ) {
+    val textos = recursosLocalizados()
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
     var aberto by remember { mutableStateOf(false) }
     val ativo = estado.projetoAtivo
@@ -41,7 +45,7 @@ fun SeletorProjetoAtivo(
     Box(modifier = modifier) {
         TextButton(onClick = { aberto = true }) {
             Text(
-                text = estado.projetoAtivo?.nome ?: "Projetos",
+                text = estado.projetoAtivo?.nome ?: textos.getString(R.string.projects),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -65,7 +69,7 @@ fun SeletorProjetoAtivo(
             }
             HorizontalDivider()
             DropdownMenuItem(
-                text = { Text(text = "Gerenciar projetos") },
+                text = { Text(text = textos.getString(R.string.manage_projects)) },
                 leadingIcon = {
                     Icon(imageVector = Icons.AutoMirrored.Filled.List, contentDescription = null)
                 },
