@@ -33,7 +33,7 @@ Arquitetura **MVVM** com `ViewModel`, `StateFlow` e Coroutines, organizada em
 
 ## Requisitos de ambiente
 
-1. **JDK 17 ou superior** (testado com JDK 21).
+1. **JDK 21** (necessário também para os testes Robolectric com Android SDK 36).
 2. **Android SDK** com os pacotes:
    - `platforms;android-37.0`
    - `build-tools;36.0.0`

@@ -24,10 +24,17 @@ import org.robolectric.annotation.GraphicsMode
 
 /** Store images rendered from the real app with isolated, illustrative test data. */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [36], qualifiers = "en-rUS-w360dp-h800dp-xhdpi-notnight", application = RevisaCicloApp::class)
+@Config(sdk = [36], qualifiers = "en-rUS-w360dp-h800dp-notnight-xhdpi", application = RevisaCicloApp::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 class EnglishScreenshotsTest {
-    @get:Rule val compose = createAndroidComposeRule<MainActivity>()
+    private val initializeWorkManager = object : org.junit.rules.ExternalResource() {
+        override fun before() {
+            val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<android.content.Context>()
+            androidx.work.WorkManager.initialize(context, androidx.work.Configuration.Builder().build())
+        }
+    }
+    val compose = createAndroidComposeRule<MainActivity>()
+    @get:Rule val rules: org.junit.rules.TestRule = org.junit.rules.RuleChain.outerRule(initializeWorkManager).around(compose)
 
     @Test fun captureFiveEnglishScreens() {
         assumeTrue(System.getProperty("roborazzi.test.record") == "true")
