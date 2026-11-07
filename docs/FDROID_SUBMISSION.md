@@ -64,7 +64,8 @@ merge e depois publicação em https://f-droid.org/packages/br.com.revisaciclo/.
 Categories:
   - Science & Education
 License: GPL-3.0-or-later
-AuthorName: Valdenor
+AuthorName: Valdenor Tavares
+AuthorEmail: valdenorsa@proton.me
 SourceCode: https://github.com/alunoadsnoite/RevisaCiclo
 IssueTracker: https://github.com/alunoadsnoite/RevisaCiclo/issues
 Changelog: https://github.com/alunoadsnoite/RevisaCiclo/releases

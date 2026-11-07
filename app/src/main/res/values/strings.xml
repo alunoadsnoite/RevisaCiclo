@@ -62,6 +62,10 @@
     <string name="edit_intervals">Editar intervalos</string>
     <string name="about">Sobre</string>
     <string name="version_format">Versão %1$s</string>
+    <string name="developer_format">Desenvolvedor: %1$s</string>
+    <string name="contact_format">Contato: %1$s</string>
+    <string name="developer_name">Valdenor Tavares</string>
+    <string name="developer_email">valdenorsa@proton.me</string>
     <string name="offline_spaced_repetition_your_data_stays_on_your_device">Aplicativo offline de revisão espaçada. Seus dados ficam apenas no dispositivo.</string>
     <string name="enter_the_days_between_reviews_separated_by_commas_values_must_be">Informe os dias entre revisões, separados por vírgula. Precisam ser positivos e estritamente crescentes.</string>
     <string name="reset_to_default">Restaurar padrão</string>

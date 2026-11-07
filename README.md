@@ -223,6 +223,13 @@ rascunho de publicação em [docs/FDROID_SUBMISSION.md](docs/FDROID_SUBMISSION.m
 2. Migrar a injeção de dependências manual para Hilt, se necessário.
 3. Notificações por projeto ativo (hoje o lembrete é global).
 
+## Autoria e contato
+
+Desenvolvido por **Valdenor Tavares**.
+
+- E-mail: [valdenorsa@proton.me](mailto:valdenorsa@proton.me)
+- Issues: https://github.com/alunoadsnoite/RevisaCiclo/issues
+
 ## Licença
 
 Distribuído sob a **GNU General Public License v3.0 ou posterior**

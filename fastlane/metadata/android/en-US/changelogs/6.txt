@@ -1,0 +1,1 @@
+The About tab now shows developer Valdenor Tavares and the contact valdenorsa@proton.me, with a direct link to open the email app.
