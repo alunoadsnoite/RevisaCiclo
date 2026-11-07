@@ -1,5 +1,18 @@
 # Submissão ao F-Droid — RevisaCiclo
 
+## Atualização em 07/11/2026
+
+- Versão **0.1.5 / versionCode 6**.
+- A aba **Sobre** passa a exibir o desenvolvedor **Valdenor Tavares** e o
+  contato **valdenorsa@proton.me**, com link `mailto:` para o aplicativo de
+  e-mail.
+- Metadados do F-Droid atualizados com `AuthorName: Valdenor Tavares` e
+  `AuthorEmail: valdenorsa@proton.me`.
+- Commit upstream: `94af1bc`.
+- A receita usa `AutoUpdateMode: Version` e `UpdateCheckMode: Tags`, portanto a
+  tag `v0.1.5` é detectada automaticamente. O MR do `fdroiddata` deve ser
+  atualizado para incluir o `AuthorEmail` e a nova versão.
+
 ## Estado em 22/10/2026
 
 O [MR !51985](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/51985) foi mesclado em 22/10/2026 às 08:36 UTC, para a versão 0.1.3. Merge não confirma disponibilidade no catálogo. A versão 0.1.4 prepara tradução completa em inglês, preserva português como idioma padrão e inclui seleção de idioma nas configurações Android compatíveis. As capturas en-US anteriores ainda mostravam português e devem ser substituídas por renderizações reais em inglês.
@@ -76,15 +89,15 @@ RepoType: git
 Repo: https://github.com/alunoadsnoite/RevisaCiclo.git
 
 Builds:
-  - versionName: 0.1.3
-    versionCode: 4
-    commit: 5628156697a00f56af0d643fbf079475da67bd4b
+  - versionName: 0.1.5
+    versionCode: 6
+    commit: 94af1bc
     subdir: app
     gradle:
       - yes
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-CurrentVersion: 0.1.3
-CurrentVersionCode: 4
+CurrentVersion: 0.1.5
+CurrentVersionCode: 6
 ```
