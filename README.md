@@ -1,6 +1,6 @@
 # RevisaCiclo
 
-Aplicativo Android nativo de **revisão espaçada** para estudantes brasileiros.
+Aplicativo Android nativo de **revisão espaçada** para organizar os estudos.
 
 O aplicativo já conta com o motor de revisão espaçada por ciclos, cadastro de
 disciplinas, cadastro de assuntos com data de estudo, a conclusão/avaliação das
@@ -9,6 +9,11 @@ sequência, a aba de **estatísticas** e **projetos de estudo** independentes. T
 oferece **backup completo** (`.revisaciclo`), **exportação JSON** portátil e
 **restauração segura** com recuperação de falhas. Não há dados de demonstração: o
 usuário começa com a base vazia e cria o próprio conteúdo.
+
+A interface está disponível em **português do Brasil, inglês e espanhol**. No
+Android 13 ou superior, a escolha fica nas configurações de idioma do
+RevisaCiclo no sistema. Em versões anteriores, o app usa o idioma do aparelho.
+A troca de idioma preserva os dados de estudo e as revisões agendadas.
 
 ## Stack
 
