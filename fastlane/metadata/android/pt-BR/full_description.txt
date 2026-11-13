@@ -4,4 +4,4 @@ Acompanhe o progresso na roda de estágios, realize sessões de revisão e consu
 
 Funciona offline, sem anúncios, rastreamento ou necessidade de conta.
 
-Interface disponível em português e inglês.
+Interface disponível em português do Brasil, inglês e espanhol.
