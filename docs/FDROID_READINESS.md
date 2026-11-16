@@ -80,11 +80,13 @@ Comando de build (a partir do código-fonte):
 ./gradlew assembleDebug
 ```
 
-## Versionamento
+## Versionamento e estado da publicação
 
-- `versionCode` e `versionName` em `app/build.gradle.kts` (atual: `4` / `0.1.3`).
+- Versão upstream atual: `0.1.5` (`versionCode` 6), definida em `app/build.gradle.kts` e marcada pela tag `v0.1.5`.
+- A versão `0.1.5` está disponível no catálogo F-Droid desde 11/11/2026, com APK compilado e assinado pelo F-Droid.
+- O MR de inclusão `!51985` foi mesclado; a receita com atualização automática detectou e publicou a tag `v0.1.5`.
 - Releases usam R8 para otimizar e reduzir o código e remover recursos não utilizados.
-- A cada release, incremente ambos e crie a tag correspondente no repositório.
+- Em cada release futura, incremente `versionCode` e `versionName` e crie a tag correspondente.
 
 ## Metadados sugeridos para o F-Droid
 
@@ -96,9 +98,10 @@ Comando de build (a partir do código-fonte):
 | Resumo | Revisão espaçada offline para estudos. |
 | Recursos | Offline, Sem anúncios, Sem rastreamento, Software livre. |
 
-## Itens a conferir antes de publicar
+## Itens a conferir antes de publicar uma nova versão
 
-- [ ] Tag de release criada e apontando para o commit exato do `versionCode`.
+- [x] `v0.1.5` criada e apontando para o commit correspondente ao `versionCode` 6.
+- [x] Metadados do F-Droid processados e versão `0.1.5` disponível no catálogo.
 - [ ] `./gradlew testDebugUnitTest lintDebug assembleDebug` sem erros.
 - [ ] Nenhuma permissão nova sem justificativa.
 - [ ] Revisão de dependências (sem novas bibliotecas proprietárias).
