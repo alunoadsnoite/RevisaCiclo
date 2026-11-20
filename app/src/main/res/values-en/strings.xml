@@ -212,4 +212,9 @@
     </plurals>
     <string name="reviews_due_today_filter">Due today</string>
     <string name="no_reviews_due_today">No reviews due today.</string>
+    <string name="support_developer">Support the developer</string>
+    <string name="copy_pix">Copy Pix key</string>
+    <string name="pix_copied">Pix key copied.</string>
+    <string name="pix_copy_error">Could not copy the Pix key.</string>
+    <string name="sponsors_error">Could not open GitHub Sponsors.</string>
 </resources>

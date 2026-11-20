@@ -213,4 +213,9 @@
     </plurals>
     <string name="reviews_due_today_filter">Para revisar hoje</string>
     <string name="no_reviews_due_today">Nenhuma revisão para hoje.</string>
+    <string name="support_developer">Apoie o desenvolvedor</string>
+    <string name="copy_pix">Copiar chave Pix</string>
+    <string name="pix_copied">Chave Pix copiada.</string>
+    <string name="pix_copy_error">Não foi possível copiar a chave Pix.</string>
+    <string name="sponsors_error">Não foi possível abrir o GitHub Sponsors.</string>
 </resources>
