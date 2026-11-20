@@ -211,4 +211,6 @@
         <item quantity="one">Você tem %1$d revisão para fazer hoje.</item>
         <item quantity="other">Você tem %1$d revisões para fazer hoje.</item>
     </plurals>
+    <string name="reviews_due_today_filter">Para revisar hoje</string>
+    <string name="no_reviews_due_today">Nenhuma revisão para hoje.</string>
 </resources>

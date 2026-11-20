@@ -210,4 +210,6 @@
         <item quantity="one">You have %1$d review due today.</item>
         <item quantity="other">You have %1$d reviews due today.</item>
     </plurals>
+    <string name="reviews_due_today_filter">Due today</string>
+    <string name="no_reviews_due_today">No reviews due today.</string>
 </resources>

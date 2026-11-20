@@ -219,7 +219,7 @@ rascunho de publicação em [docs/FDROID_SUBMISSION.md](docs/FDROID_SUBMISSION.m
 
 ## Próximos passos recomendados
 
-1. Filtros e ordenação adicionais na lista de assuntos/revisões.
+1. Filtros e ordenação adicionais na lista de assuntos.
 2. Migrar a injeção de dependências manual para Hilt, se necessário.
 3. Notificações por projeto ativo (hoje o lembrete é global).
 

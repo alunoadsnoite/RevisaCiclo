@@ -1,0 +1,1 @@
+Novo filtro «Para revisar hoje» na aba Revisões. Veja as revisões atrasadas em ordem de vencimento, seguidas das agendadas para hoje.

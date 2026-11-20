@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -32,12 +33,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.revisaciclo.domain.model.AvaliacaoRevisao
@@ -55,6 +58,12 @@ fun RevisoesScreen(
 ) {
     val textos = recursosLocalizados()
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
+    LifecycleResumeEffect(Unit) {
+        viewModel.atualizarData()
+        onPauseOrDispose { }
+    }
+    var apenasParaHoje by rememberSaveable { mutableStateOf(false) }
+    val lista = if (apenasParaHoje) estado.paraHoje else estado.pendentes
     var avaliando by remember { mutableStateOf<RevisaoPendente?>(null) }
 
     Scaffold(
@@ -101,6 +110,25 @@ fun RevisoesScreen(
                             Text(text = textos.getString(R.string.start_review_session))
                         }
                     }
+                    item {
+                        FilterChip(
+                            selected = apenasParaHoje,
+                            onClick = {
+                                viewModel.atualizarData()
+                                apenasParaHoje = !apenasParaHoje
+                            },
+                            label = { Text(textos.getString(R.string.reviews_due_today_filter)) },
+                        )
+                    }
+                    if (!estado.carregando && apenasParaHoje && lista.isEmpty()) {
+                        item {
+                            Text(
+                                text = textos.getString(R.string.no_reviews_due_today),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
                     if (estado.atrasadas > 0) {
                         item {
                             Text(
@@ -110,7 +138,7 @@ fun RevisoesScreen(
                             )
                         }
                     }
-                    items(items = estado.pendentes, key = { it.revisaoId }) { pendente ->
+                    items(items = lista, key = { it.revisaoId }) { pendente ->
                         ItemRevisaoPendente(
                             pendente = pendente,
                             onAvaliar = { avaliando = pendente },
