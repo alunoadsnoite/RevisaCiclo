@@ -1,5 +1,15 @@
 # RevisaCiclo
 
+**Organize seus estudos e saiba o que revisar a cada dia.**
+
+`Kotlin · Jetpack Compose · Room`
+
+[Reportar problema](https://github.com/alunoadsnoite/RevisaCiclo/issues) · [Licença](LICENSE)
+
+## Veja o aplicativo
+
+<img src="fastlane/metadata/android/pt-BR/images/phoneScreenshots/5.png" alt="Tela 1 do RevisaCiclo" width="240">
+
 Aplicativo Android nativo de **revisão espaçada** para estudantes brasileiros.
 
 O aplicativo já conta com o motor de revisão espaçada por ciclos, cadastro de
@@ -237,3 +247,7 @@ Distribuído sob a **GNU General Public License v3.0 ou posterior**
 
 A autoria, a origem e as licenças dos ícones, gráficos e capturas estão em
 [Recursos gráficos](docs/GRAPHICS_LICENSES.md).
+
+## Como contribuir
+
+Sugestões, traduções e relatos de problemas são bem-vindos. Abra uma issue com o contexto e o comportamento esperado. Para alterações de código, explique a mudança e os testes realizados no pull request. Use dados fictícios nos exemplos e nas capturas.
