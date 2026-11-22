@@ -17,7 +17,7 @@ interface RevisaoRepository {
     fun observarAssunto(id: Long): Flow<Assunto?>
     fun observarRevisoes(): Flow<List<Revisao>>
     fun observarRevisoesPendentes(): Flow<List<RevisaoPendente>>
-    fun observarProgressoPorDisciplina(): Flow<List<ProgressoDisciplina>>
+    fun observarProgressoPorDisciplina(hoje: LocalDate): Flow<List<ProgressoDisciplina>>
 
     suspend fun criarDisciplina(projetoId: Long, nome: String, cor: Long): Long
     suspend fun atualizarDisciplina(id: Long, nome: String, cor: Long)

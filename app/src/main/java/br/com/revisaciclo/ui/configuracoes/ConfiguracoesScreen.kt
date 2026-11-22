@@ -5,6 +5,9 @@ import br.com.revisaciclo.R
 import br.com.revisaciclo.ui.common.recursosLocalizados
 
 import android.Manifest
+import android.content.ActivityNotFoundException
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -52,6 +55,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -73,6 +77,7 @@ import br.com.revisaciclo.domain.preferencias.ResultadoIntervalos
 import br.com.revisaciclo.domain.preferencias.ValidadorIntervalos
 import java.time.LocalDate
 import java.time.LocalTime
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
@@ -192,6 +197,8 @@ fun ConfiguracoesScreen(
                     )
                 },
             )
+
+            SecaoApoio(snackbarHostState)
 
             SecaoSobre(versao = versaoDoApp(contexto))
         }
@@ -575,6 +582,43 @@ private fun SecaoIntervalos(
             Spacer(modifier = Modifier.height(12.dp))
             OutlinedButton(onClick = onEditar) {
                 Text(text = textos.getString(R.string.edit_intervals))
+            }
+        }
+    }
+}
+
+@Composable
+private fun SecaoApoio(snackbarHostState: SnackbarHostState) {
+    val contexto = LocalContext.current
+    val textos = recursosLocalizados()
+    val links = LocalUriHandler.current
+    val scope = rememberCoroutineScope()
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            Text(textos.getString(R.string.support_developer), style = MaterialTheme.typography.titleMedium)
+            TextButton(onClick = {
+                val clipboard = contexto.getSystemService(ClipboardManager::class.java)
+                if (clipboard == null) {
+                    scope.launch { snackbarHostState.showSnackbar(textos.getString(R.string.pix_copy_error)) }
+                } else {
+                    clipboard.setPrimaryClip(ClipData.newPlainText("Pix", "81063e93-0c1b-4ddb-8a16-b9be68a75d4e"))
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                        scope.launch { snackbarHostState.showSnackbar(textos.getString(R.string.pix_copied)) }
+                    }
+                }
+            }) {
+                Text(textos.getString(R.string.copy_pix))
+            }
+            TextButton(onClick = {
+                try {
+                    links.openUri("https://github.com/sponsors/alunoadsnoite")
+                } catch (_: ActivityNotFoundException) {
+                    scope.launch { snackbarHostState.showSnackbar(textos.getString(R.string.sponsors_error)) }
+                } catch (_: IllegalArgumentException) {
+                    scope.launch { snackbarHostState.showSnackbar(textos.getString(R.string.sponsors_error)) }
+                }
+            }) {
+                Text("GitHub Sponsors")
             }
         }
     }

@@ -81,8 +81,8 @@ class OfflineRevisaoRepository(
             }
         }
 
-    override fun observarProgressoPorDisciplina(): Flow<List<ProgressoDisciplina>> =
-        disciplinaDao.observarResumo(hoje().toEpochDay()).map { linhas ->
+    override fun observarProgressoPorDisciplina(hoje: LocalDate): Flow<List<ProgressoDisciplina>> =
+        disciplinaDao.observarResumo(hoje.toEpochDay()).map { linhas ->
             linhas.map { linha ->
                 ProgressoDisciplina(
                     disciplinaId = linha.disciplinaId,
@@ -147,6 +147,7 @@ class OfflineRevisaoRepository(
         descricao: String?,
         dataEstudo: LocalDate,
     ) = database.withTransaction {
+        val anterior = assuntoDao.buscarPorId(id) ?: return@withTransaction
         assuntoDao.atualizar(
             id = id,
             disciplinaId = disciplinaId,
@@ -154,6 +155,9 @@ class OfflineRevisaoRepository(
             descricao = descricao,
             dataEstudo = dataEstudo.toEpochDay(),
         )
+
+        // Editing metadata must preserve the date based on the last review.
+        if (anterior.dataEstudo == dataEstudo.toEpochDay()) return@withTransaction
 
         val pendente = revisaoDao.buscarPendentePorAssunto(id)
         val ciclo = pendente?.indiceCiclo ?: 1
@@ -188,6 +192,8 @@ class OfflineRevisaoRepository(
     override suspend fun concluirRevisao(revisaoId: Long, avaliacao: AvaliacaoRevisao) =
         database.withTransaction {
             val revisao = revisaoDao.buscarPorId(revisaoId) ?: return@withTransaction
+            // The transaction serializes concurrent evaluations; ignore retries.
+            if (revisao.status == StatusRevisao.CONCLUIDA.name) return@withTransaction
             val data = hoje()
 
             revisaoDao.atualizarConclusao(

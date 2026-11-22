@@ -23,6 +23,8 @@ import java.time.LocalDate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
@@ -59,11 +61,12 @@ class DashboardViewModel(
 
     private val hoje = MutableStateFlow(LocalDate.now(clock))
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val dados = combine(
         repository.observarDisciplinas(),
         repository.observarAssuntos(),
         repository.observarRevisoes(),
-        repository.observarProgressoPorDisciplina(),
+        hoje.flatMapLatest { data -> repository.observarProgressoPorDisciplina(data) },
     ) { disciplinas, assuntos, revisoes, progressos ->
         DadosDashboard(disciplinas, assuntos, revisoes, progressos)
     }

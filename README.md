@@ -10,7 +10,7 @@
 
 <img src="fastlane/metadata/android/pt-BR/images/phoneScreenshots/5.png" alt="Tela 1 do RevisaCiclo" width="240">
 
-Aplicativo Android nativo de **revisão espaçada** para estudantes brasileiros.
+Aplicativo Android nativo de **revisão espaçada** para organizar os estudos.
 
 O aplicativo já conta com o motor de revisão espaçada por ciclos, cadastro de
 disciplinas, cadastro de assuntos com data de estudo, a conclusão/avaliação das
@@ -19,6 +19,11 @@ sequência, a aba de **estatísticas** e **projetos de estudo** independentes. T
 oferece **backup completo** (`.revisaciclo`), **exportação JSON** portátil e
 **restauração segura** com recuperação de falhas. Não há dados de demonstração: o
 usuário começa com a base vazia e cria o próprio conteúdo.
+
+A interface está disponível em **português do Brasil, inglês e espanhol**. No
+Android 13 ou superior, a escolha fica nas configurações de idioma do
+RevisaCiclo no sistema. Em versões anteriores, o app usa o idioma do aparelho.
+A troca de idioma preserva os dados de estudo e as revisões agendadas.
 
 ## Stack
 
@@ -226,6 +231,12 @@ rascunho de publicação em [docs/FDROID_SUBMISSION.md](docs/FDROID_SUBMISSION.m
   backup (JSON, serialização, validação e reconciliação).
 - Teste de interface Compose (`androidTest`) para a roda de estágios
   (executável com `connectedDebugAndroidTest`).
+
+## Verificações automáticas
+
+O GitHub Actions executa testes JVM/Robolectric, lint, build release sem assinatura
+e compilação dos testes instrumentados em cada PR e envio à `master`. Os testes
+instrumentados ainda precisam ser executados em aparelho ou emulador.
 
 ## Próximos passos recomendados
 
