@@ -1,0 +1,1 @@
+Conserva las fechas al editar temas, evita finalizaciones duplicadas y actualiza los contadores de retraso. Añade español y opciones de apoyo.

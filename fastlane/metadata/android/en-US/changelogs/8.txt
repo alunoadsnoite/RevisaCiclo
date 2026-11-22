@@ -1,0 +1,1 @@
+Preserves review dates when editing topics, prevents duplicate completions and refreshes overdue counts. Adds Spanish and support options.
