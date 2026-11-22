@@ -29,6 +29,24 @@ class LocalizationTest {
         assertEquals("My studies", texts.getString(R.string.default_project_name))
     }
 
+    @Test fun spanishLabelsAndDefaultProjectAreAvailable() {
+        for (tag in listOf("es-ES", "es-MX")) {
+            val texts = resources(tag)
+            assertEquals("Asignaturas", texts.getString(R.string.subjects))
+            assertEquals("Inicio", texts.getString(R.string.home))
+            assertEquals("Mis estudios", texts.getString(R.string.default_project_name))
+            assertEquals("Próximo repaso: 22/10/2026 (ciclo 2)", texts.getString(R.string.next_review_cycle_format, "22/10/2026", 2))
+        }
+    }
+
+    @Test fun spanishBackupMessagesAndReminderCountsAreLocalized() {
+        val texts = resources("es-ES")
+        assertEquals("Datos restaurados. Temas: 2; repasos: 3.", texts.localizarMensagem("Dados restaurados: 2 assuntos, 3 revisões."))
+        assertEquals("No se pudo validar la copia de seguridad: Un tema no tiene título.", texts.localizarMensagem("O backup não pôde ser validado: Assunto sem título."))
+        assertEquals("Tienes 1 repaso para hoy.", texts.getQuantityString(R.plurals.reviews_due_notification, 1, 1))
+        assertEquals("Tienes 2 repasos para hoy.", texts.getQuantityString(R.plurals.reviews_due_notification, 2, 2))
+    }
+
     @Test fun portugueseAndUnsupportedLocaleKeepPortugueseFallback() {
         for (tag in listOf("pt-BR", "fr-FR")) {
             val texts = resources(tag)
@@ -54,6 +72,16 @@ class LocalizationTest {
     @Test fun dateFormatFollowsTheSelectedLocale() {
         val day = LocalDate.of(2026, 10, 22)
         assertEquals("10/22/2026", formatarData(day, Locale.US))
+        assertEquals("22/10/2026", formatarData(day, Locale.forLanguageTag("es-ES")))
         assertEquals("22/10/2026", formatarData(day, Locale.forLanguageTag("pt-BR")))
+    }
+    @Test fun spanishIncludesCurrentReviewFilterAndDonationMessages() {
+        for (tag in listOf("es-ES", "es-MX")) {
+            val texts = resources(tag)
+            assertEquals("Solo pendientes de hoy", texts.getString(R.string.reviews_due_today_filter))
+            assertEquals("No hay revisiones pendientes para hoy.", texts.getString(R.string.no_reviews_due_today))
+            assertEquals("Apoya al desarrollador", texts.getString(R.string.support_developer))
+            assertEquals("Copiar clave Pix", texts.getString(R.string.copy_pix))
+        }
     }
 }
