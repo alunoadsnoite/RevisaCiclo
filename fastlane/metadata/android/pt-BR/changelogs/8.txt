@@ -1,0 +1,1 @@
+Corrige agendamentos ao editar assuntos, evita conclusões duplicadas e atualiza contadores de atraso. Adiciona espanhol e opções de apoio.

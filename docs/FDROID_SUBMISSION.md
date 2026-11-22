@@ -1,5 +1,13 @@
 # Submissão ao F-Droid — RevisaCiclo
 
+## Atualização em 22/11/2026
+
+- Release 0.1.7, versionCode 8: correções de agendamento e contadores,
+  espanhol e opções de apoio. Notas em [v0.1.7](releases/v0.1.7.md).
+- O autor confirmou a validação em Motorola e autorizou a publicação.
+- A versão upstream está preparada para criação da tag e release após os testes e o build.
+  Publicação upstream não confirma disponibilidade imediata no F-Droid.
+
 ## Atualização em 07/11/2026
 
 - Versão **0.1.5 / versionCode 6**.
