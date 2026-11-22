@@ -1,0 +1,67 @@
+name: Publicar versão aprovada
+
+on:
+  push:
+    branches: [master]
+    paths: [.github/workflows/publish-approved-release.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  SOURCE_SHA: '39c55faddb9c7715f41500aaa42e3cb457dcc7aa'
+  VALIDATED_SHA: '968552e03e09c7b6b3ae0fe956811c750ac6ebe6'
+  VALIDATED_RUN: '45054391984'
+  RELEASE_TAG: 'v0.1.7'
+
+jobs:
+  verify:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Conferir CI aprovado e identidade do código
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          run_json=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$VALIDATED_RUN")
+          test "$(jq -r '.status' <<< "$run_json")" = completed
+          test "$(jq -r '.conclusion' <<< "$run_json")" = success
+          test "$(jq -r '.head_sha' <<< "$run_json")" = "$VALIDATED_SHA"
+          source_tree=$(gh api "repos/$GITHUB_REPOSITORY/commits/$SOURCE_SHA" --jq '.commit.tree.sha')
+          tested_tree=$(gh api "repos/$GITHUB_REPOSITORY/commits/$VALIDATED_SHA" --jq '.commit.tree.sha')
+          test "$source_tree" = "$tested_tree"
+
+  publish:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SOURCE_SHA }}
+          persist-credentials: false
+      - name: Criar tag e release da versão aprovada
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TITLE: "RevisaCiclo 0.1.7"
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            existing=$(gh api "repos/$GITHUB_REPOSITORY/commits/$RELEASE_TAG" --jq '.sha')
+            test "$existing" = "$SOURCE_SHA"
+            echo "Release aprovada já publicada; nenhum dado alterado."
+            exit 0
+          fi
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" >/dev/null 2>&1; then
+            existing=$(gh api "repos/$GITHUB_REPOSITORY/commits/$RELEASE_TAG" --jq '.sha')
+            test "$existing" = "$SOURCE_SHA"
+          fi
+          gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --target "$SOURCE_SHA" --title "$RELEASE_TITLE" --notes-file "docs/releases/$RELEASE_TAG.md" --latest
